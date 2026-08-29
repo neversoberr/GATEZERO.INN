@@ -20,9 +20,9 @@ export function QuickViewModal({ event, onClose }: QuickViewModalProps) {
   }).toUpperCase();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/85 backdrop-blur-md animate-in fade-in">
       <div 
-        className="relative w-full max-w-2xl bg-card border border-accent/40 p-6 sm:p-8 text-foreground max-h-[90vh] overflow-y-auto font-mono"
+        className="relative w-full max-w-2xl bg-card border-2 border-border p-6 sm:p-8 text-foreground max-h-[90vh] overflow-y-auto font-mono"
         style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%)' }}
       >
         {/* Top Header */}
@@ -45,13 +45,13 @@ export function QuickViewModal({ event, onClose }: QuickViewModalProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* Left Poster */}
-          <div className="md:col-span-5 relative aspect-[4/5] bg-black border border-border/50 overflow-hidden">
+          <div className="md:col-span-5 relative aspect-[4/5] bg-black border-2 border-border overflow-hidden">
             <img
               src={event.posterUrl}
               alt={event.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute bottom-2 left-2 right-2 bg-black/80 backdrop-blur-md p-2 border border-border/50 text-[10px]">
+            <div className="absolute bottom-2 left-2 right-2 bg-background/85 backdrop-blur-md p-2 border-2 border-border text-[10px]">
               <div className="text-muted-foreground uppercase">GATE CAPACITY</div>
               <div className="text-accent font-bold">
                 {event.totalTicketsSold} / {event.totalCapacity} PASSES ISSUED
@@ -97,7 +97,7 @@ export function QuickViewModal({ event, onClose }: QuickViewModalProps) {
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {event.lineup.slice(0, 3).map(art => (
-                    <span key={art.id} className="px-2 py-1 bg-card border border-border/50 text-[11px] text-foreground">
+                    <span key={art.id} className="px-2 py-1 bg-card border-2 border-border text-[11px] text-foreground">
                       {art.name}
                     </span>
                   ))}

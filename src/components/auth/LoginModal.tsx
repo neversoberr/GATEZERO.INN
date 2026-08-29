@@ -42,9 +42,9 @@ export function LoginModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/85 backdrop-blur-md animate-in fade-in duration-200">
       <div 
-        className="relative w-full max-w-md bg-card border border-accent/40 p-6 sm:p-8 text-foreground"
+        className="relative w-full max-w-md bg-card border-2 border-border p-6 sm:p-8 text-foreground"
         style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%)' }}
       >
         {/* Top brutalist bar */}
@@ -74,7 +74,7 @@ export function LoginModal() {
         </div>
 
         {/* Quick Demo Switcher Tabs */}
-        <div className="mb-6 p-3 bg-black/60 border border-border/50">
+        <div className="mb-6 p-3 bg-background/80 border-2 border-border">
           <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-2 flex items-center gap-1.5">
             <UserCheck className="w-3.5 h-3.5 text-accent" />
             ONE-CLICK ROLE DEMO LOGIN:
@@ -82,31 +82,31 @@ export function LoginModal() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-xs font-mono">
             <button
               onClick={() => handleQuickRole('customer')}
-              className="px-2 py-1.5 bg-card hover:bg-accent hover:text-black border border-border/50 text-left transition-colors truncate"
+              className="px-2 py-1.5 bg-card hover:bg-accent hover:text-black border-2 border-border text-left transition-colors truncate"
             >
               • Attendee
             </button>
             <button
               onClick={() => handleQuickRole('organizer')}
-              className="px-2 py-1.5 bg-card hover:bg-accent hover:text-black border border-border/50 text-left transition-colors truncate"
+              className="px-2 py-1.5 bg-card hover:bg-accent hover:text-black border-2 border-border text-left transition-colors truncate"
             >
               • Organizer
             </button>
             <button
               onClick={() => handleQuickRole('promoter')}
-              className="px-2 py-1.5 bg-card hover:bg-accent hover:text-black border border-border/50 text-left transition-colors truncate"
+              className="px-2 py-1.5 bg-card hover:bg-accent hover:text-black border-2 border-border text-left transition-colors truncate"
             >
               • Promoter
             </button>
             <button
               onClick={() => handleQuickRole('door_staff')}
-              className="px-2 py-1.5 bg-card hover:bg-accent hover:text-black border border-border/50 text-left transition-colors truncate"
+              className="px-2 py-1.5 bg-card hover:bg-accent hover:text-black border-2 border-border text-left transition-colors truncate"
             >
               • Door Staff
             </button>
             <button
               onClick={() => handleQuickRole('super_admin')}
-              className="px-2 py-1.5 bg-card hover:bg-accent hover:text-black border border-border/50 text-left transition-colors truncate col-span-2 sm:col-span-1"
+              className="px-2 py-1.5 bg-card hover:bg-accent hover:text-black border-2 border-border text-left transition-colors truncate col-span-2 sm:col-span-1"
             >
               • Super Admin
             </button>
@@ -116,7 +116,7 @@ export function LoginModal() {
         {/* Auth form */}
         {!otpSent ? (
           <form onSubmit={handleSendOtp} className="space-y-4">
-            <div className="flex border border-border/50 bg-black/40 p-1">
+            <div className="flex border-2 border-border bg-muted/50 p-1">
               <button
                 type="button"
                 onClick={() => { setAuthMethod('phone'); setInputValue(''); }}
@@ -152,7 +152,7 @@ export function LoginModal() {
                   value={inputValue}
                   onChange={e => setInputValue(e.target.value)}
                   placeholder={authMethod === 'phone' ? '98201 44520' : 'alex@gatezero.in'}
-                  className={`w-full bg-black/60 border border-border px-3 py-2.5 text-foreground font-mono text-sm focus:border-accent focus:outline-none transition-colors ${
+                  className={`w-full bg-background/80 border-2 border-border px-3 py-2.5 text-foreground font-mono text-sm focus:border-accent focus:outline-none transition-colors ${
                     authMethod === 'phone' ? 'pl-12' : ''
                   }`}
                   required
@@ -189,7 +189,7 @@ export function LoginModal() {
                 value={otpCode}
                 onChange={e => setOtpCode(e.target.value)}
                 placeholder="6 0 2 9 1 8"
-                className="w-full bg-black/60 border border-accent px-3 py-3 text-center text-xl font-mono tracking-widest text-accent focus:outline-none"
+                className="w-full bg-background/80 border-2 border-accent px-3 py-3 text-center text-xl font-mono tracking-widest text-accent focus:outline-none"
                 autoFocus
                 required
               />
