@@ -8,8 +8,8 @@ import { RoleBanner } from '@/components/layout/RoleBanner';
 import { LoginModal } from '@/components/auth/LoginModal';
 import { Event, TicketTier } from '@/types';
 import { CITIES, CATEGORIES } from '@/lib/data/initial-data';
-import { ToastProvider, useToast } from '@/context/ToastContext';
-import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { useToast } from '@/context/ToastContext';
+import { useAuth } from '@/context/AuthContext';
 import { 
   Plus, 
   Trash2, 
@@ -175,8 +175,8 @@ function CreateEventWizard() {
       dressCode,
       phonePolicy,
       refundPolicyText,
-      organizerId: 'org_subkulture',
-      organizerName: 'SubKulture India',
+      organizerId: user?.organizerCompanyId || 'org_subkulture',
+      organizerName: user?.name || 'SubKulture India',
       organizerLogo: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=300&auto=format&fit=crop',
       organizerSlug: 'subkulture-india',
       lineup: [
@@ -708,11 +708,5 @@ function CreateEventWizard() {
 }
 
 export default function NewEventPage() {
-  return (
-    <ToastProvider>
-      <AuthProvider>
-        <CreateEventWizard />
-      </AuthProvider>
-    </ToastProvider>
-  );
+  return <CreateEventWizard />;
 }

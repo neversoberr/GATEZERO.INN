@@ -17,6 +17,7 @@ import {
   Smartphone 
 } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
+import { printDocument, formatInr } from '@/lib/exports';
 
 interface AccessPassCardProps {
   order: Order;
@@ -191,7 +192,21 @@ export function AccessPassCard({ order, attendee, onTicketUpdated }: AccessPassC
           <div className="flex flex-wrap gap-2 pt-2 text-xs">
             <button
               onClick={() => {
-                toast.success('PASS DOWNLOADED', `Saved PDF pass for ${attendee.fullName}`);
+                printDocument(`Gate Zero Pass ${attendee.ticketCode}`, `
+                  <h2>Digital access pass</h2>
+                  <div class="pass">
+                    <div>
+                      <div class="muted">${order.orderNumber}</div>
+                      <h1>${attendee.fullName}</h1>
+                      <div>${attendee.tierName}</div>
+                      <p>${order.eventTitle}<br/>${order.eventVenue}<br/>${eventDate}</p>
+                      <p class="muted">${attendee.ticketCode}</p>
+                    </div>
+                    ${qrSrc ? `<img class="qr" src="${qrSrc}" alt="QR" />` : ''}
+                  </div>
+                  <p class="muted">Present this QR at ${attendee.gateAssigned || 'GATE 01'}. Paid ${formatInr(order.totalAmount)} via ${order.paymentMethod}.</p>
+                `);
+                toast.success('PASS READY', `Print or save PDF for ${attendee.fullName}`);
               }}
               className="px-3 py-2 bg-[#171914] hover:bg-white hover:text-black border border-white/20 uppercase font-bold flex items-center gap-1.5 transition-colors"
             >

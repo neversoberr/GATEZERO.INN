@@ -9,8 +9,8 @@ import { LoginModal } from '@/components/auth/LoginModal';
 import { EventCard } from '@/components/events/EventCard';
 import { OrganizerCompany, Event } from '@/types';
 import { INITIAL_ORGANIZERS, INITIAL_EVENTS } from '@/lib/data/initial-data';
-import { ToastProvider, useToast } from '@/context/ToastContext';
-import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { useToast } from '@/context/ToastContext';
+import { useAuth } from '@/context/AuthContext';
 import { 
   ShieldCheck, 
   Users, 
@@ -26,13 +26,7 @@ import {
 export default function OrganizerProfilePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
 
-  return (
-    <ToastProvider>
-      <AuthProvider>
-        <OrganizerContent slug={slug} />
-      </AuthProvider>
-    </ToastProvider>
-  );
+  return <OrganizerContent slug={slug} />;
 }
 
 function OrganizerContent({ slug }: { slug: string }) {

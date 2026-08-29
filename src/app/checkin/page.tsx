@@ -8,8 +8,8 @@ import { RoleBanner } from '@/components/layout/RoleBanner';
 import { LoginModal } from '@/components/auth/LoginModal';
 import { Event, CheckInLog } from '@/types';
 import { INITIAL_EVENTS, INITIAL_CHECKINS, INITIAL_ORDERS } from '@/lib/data/initial-data';
-import { ToastProvider, useToast } from '@/context/ToastContext';
-import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { useToast } from '@/context/ToastContext';
+import { useAuth } from '@/context/AuthContext';
 import { 
   ScanLine, 
   Search, 
@@ -27,13 +27,7 @@ import {
 } from 'lucide-react';
 
 export default function CheckInPage() {
-  return (
-    <ToastProvider>
-      <AuthProvider>
-        <CheckInTerminalContent />
-      </AuthProvider>
-    </ToastProvider>
-  );
+  return <CheckInTerminalContent />;
 }
 
 function CheckInTerminalContent() {
@@ -45,6 +39,7 @@ function CheckInTerminalContent() {
   const [isScanning, setIsScanning] = useState(true);
   const [offlineMode, setOfflineMode] = useState(false);
   const [logs, setLogs] = useState<CheckInLog[]>(INITIAL_CHECKINS);
+  const [events, setEvents] = useState(INITIAL_EVENTS);
 
   // Scan HUD state
   const [scanResult, setScanResult] = useState<{
@@ -54,7 +49,7 @@ function CheckInTerminalContent() {
     order?: any;
   }>({ status: null, message: '' });
 
-  const activeEvent = INITIAL_EVENTS.find(e => e.id === selectedEventId) || INITIAL_EVENTS[0];
+  const activeEvent = events.find(e => e.id === selectedEventId) || events[0] || INITIAL_EVENTS[0];
 
   // Refresh logs from API
   const refreshLogs = () => {
@@ -71,6 +66,15 @@ function CheckInTerminalContent() {
   useEffect(() => {
     refreshLogs();
   }, [selectedEventId]);
+
+  useEffect(() => {
+    fetch('/api/events?status=all')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.events?.length) setEvents(data.events);
+      })
+      .catch(() => {});
+  }, []);
 
   const executeCheckIn = async (code: string) => {
     if (!code) return;
@@ -180,7 +184,7 @@ function CheckInTerminalContent() {
               }}
               className="bg-black border border-white/20 p-2 text-xs text-white uppercase focus:border-[#C8FF16]"
             >
-              {INITIAL_EVENTS.map(ev => (
+              {events.map(ev => (
                 <option key={ev.id} value={ev.id}>
                   {ev.city}: {ev.title}
                 </option>

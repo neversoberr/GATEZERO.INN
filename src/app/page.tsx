@@ -14,8 +14,7 @@ import { TrustSection } from '@/components/home/TrustSection';
 import { OrganizerCtaSection } from '@/components/home/OrganizerCtaSection';
 import { Event, OrganizerCompany } from '@/types';
 import { INITIAL_EVENTS, INITIAL_ORGANIZERS } from '@/lib/data/initial-data';
-import { ToastProvider } from '@/context/ToastContext';
-import { AuthProvider } from '@/context/AuthContext';
+
 
 export default function HomePage() {
   const [events, setEvents] = useState<Event[]>(INITIAL_EVENTS);
@@ -43,8 +42,6 @@ export default function HomePage() {
   }, []);
 
   return (
-    <ToastProvider>
-      <AuthProvider>
         <div className="min-h-screen bg-[#050505] text-[#F1F1EB] flex flex-col selection:bg-[#C8FF16] selection:text-black">
           {/* Demo Role Switcher Bar */}
           <RoleBanner />
@@ -69,7 +66,5 @@ export default function HomePage() {
           {/* Modal */}
           <LoginModal />
         </div>
-      </AuthProvider>
-    </ToastProvider>
   );
 }

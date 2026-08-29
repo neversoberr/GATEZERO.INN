@@ -74,11 +74,14 @@
 # 1. Install dependencies
 npm install
 
-# 2. Build for production
-npm run build
+# 2. Run the local product
+npm run dev
 
-# 3. Start the production server
+# 3. Production build
+npm run build
 npm run start -- -p 3000 -H 0.0.0.0
 ```
 
 Access the application at `http://localhost:3000` or the live environment preview.
+
+Demo OTP login: any 4+ digit code. Seed identities: `alex.chen@gatezero.in`, `karan@subkulture.in`, `priya.affiliate@gatezero.in`, `staff.reayroad@gatezero.in`, `admin@gatezero.in`. Promo codes: `GATEZERO10`, `UNDERGROUND`, `BLRTECHNO`, `PRIYA10`. Secret tiers: `VIPACCESS`, `BLACKOUT`.

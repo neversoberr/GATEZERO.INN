@@ -74,6 +74,7 @@ export function EventCard({ event, onQuickView }: EventCardProps) {
         <img
           src={event.posterUrl}
           alt={event.title}
+          onError={e => { e.currentTarget.src = '/posters/fallback.svg'; }}
           className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
         />
 

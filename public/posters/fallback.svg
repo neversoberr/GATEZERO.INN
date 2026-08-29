@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <rect width="800" height="1000" fill="#050505"/>
+  <rect x="24" y="24" width="752" height="952" fill="none" stroke="#C8FF16" stroke-width="2"/>
+  <text x="60" y="140" fill="#C8FF16" font-family="ui-monospace, monospace" font-size="28" letter-spacing="8">GATE ZERO</text>
+  <text x="60" y="420" fill="#F1F1EB" font-family="ui-monospace, monospace" font-size="72" font-weight="800">ACCESS</text>
+  <text x="60" y="500" fill="#C8FF16" font-family="ui-monospace, monospace" font-size="72" font-weight="800">PASS</text>
+  <text x="60" y="920" fill="#A7AAA0" font-family="ui-monospace, monospace" font-size="18">CULTURAL TICKETING // IN</text>
+</svg>

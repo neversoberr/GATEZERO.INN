@@ -10,13 +10,13 @@ import { Event, Order, OrganizerCompany, TicketTier, PromoCode, PromoterProfile 
 import { 
   INITIAL_EVENTS, 
   INITIAL_ORDERS, 
-  INITIAL_ORGANIZERS, 
   INITIAL_PROMO_CODES, 
   INITIAL_PROMOTERS,
   INITIAL_SETTLEMENTS
 } from '@/lib/data/initial-data';
-import { ToastProvider, useToast } from '@/context/ToastContext';
-import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { downloadCsv, formatInr } from '@/lib/exports';
+import { useToast } from '@/context/ToastContext';
+import { useAuth } from '@/context/AuthContext';
 import { 
   BarChart3, 
   Calendar, 
@@ -67,7 +67,7 @@ function OrganizerDashboardContent() {
 
   // Fetch live state
   useEffect(() => {
-    fetch('/api/events')
+    fetch('/api/events?status=all')
       .then(res => res.json())
       .then(data => { if (data.success) setEvents(data.events); })
       .catch(() => {});
@@ -80,6 +80,11 @@ function OrganizerDashboardContent() {
     fetch('/api/promoters')
       .then(res => res.json())
       .then(data => { if (data.success) setPromoters(data.promoters); })
+      .catch(() => {});
+
+    fetch('/api/promo')
+      .then(res => res.json())
+      .then(data => { if (data.success && data.promoCodes) setPromoCodes(data.promoCodes); })
       .catch(() => {});
   }, []);
 
@@ -105,13 +110,22 @@ function OrganizerDashboardContent() {
     return matchesEvent && matchesSearch;
   });
 
-  const handleToggleEventStatus = (eventId: string, currentStatus: string) => {
+  const handleToggleEventStatus = async (eventId: string, currentStatus: string) => {
     const nextStatus = currentStatus === 'published' ? 'paused' : 'published';
     setEvents(prev => prev.map(e => e.id === eventId ? { ...e, status: nextStatus as any } : e));
+    try {
+      await fetch(`/api/events/${eventId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: nextStatus })
+      });
+    } catch {
+      // local update still applied
+    }
     toast.info('EVENT STATUS UPDATED', `Sales status set to ${nextStatus.toUpperCase()}`);
   };
 
-  const handleCreatePromo = (e: React.FormEvent) => {
+  const handleCreatePromo = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPromoCode) return;
     const codeObj: PromoCode = {
@@ -124,14 +138,42 @@ function OrganizerDashboardContent() {
       expiryDate: '2026-12-31T23:59:59Z',
       isActive: true
     };
-    setPromoCodes([codeObj, ...promoCodes]);
+    try {
+      const res = await fetch('/api/promo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(codeObj)
+      });
+      const data = await res.json();
+      if (data.success && data.promo) {
+        setPromoCodes([data.promo, ...promoCodes]);
+      } else {
+        setPromoCodes([codeObj, ...promoCodes]);
+      }
+    } catch {
+      setPromoCodes([codeObj, ...promoCodes]);
+    }
     setIsPromoModalOpen(false);
     setNewPromoCode('');
     toast.success('PROMO CODE CREATED', `${codeObj.code} (${codeObj.discountValue}% OFF) is now live.`);
   };
 
   const handleExportCSV = () => {
-    toast.success('ATTENDEE CSV EXPORTED', 'Encrypted spreadsheet downloaded for door staff & marketing.');
+    downloadCsv(
+      `gatezero-attendees-${Date.now()}.csv`,
+      ['Ticket Code', 'Name', 'Email', 'Phone', 'Tier', 'Event', 'Checked In', 'Gate'],
+      filteredAttendees.map(att => [
+        att.ticketCode,
+        att.fullName,
+        att.email,
+        att.phone,
+        att.tierName,
+        att.order.eventTitle,
+        att.isCheckedIn ? 'YES' : 'NO',
+        att.gateAssigned || 'GATE 01'
+      ])
+    );
+    toast.success('ATTENDEE CSV EXPORTED', `${filteredAttendees.length} rows downloaded.`);
   };
 
   return (
@@ -607,6 +649,33 @@ function OrganizerDashboardContent() {
                   </div>
                 ))}
               </div>
+
+              <div className="bg-[#0e100c] border border-white/10 overflow-x-auto">
+                <table className="w-full text-left text-xs text-white">
+                  <thead className="bg-black text-[10px] uppercase text-white/50 border-b border-white/10">
+                    <tr>
+                      <th className="p-4">Code</th>
+                      <th className="p-4">Type</th>
+                      <th className="p-4">Value</th>
+                      <th className="p-4">Used</th>
+                      <th className="p-4">Limit</th>
+                      <th className="p-4">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {promoCodes.map(promo => (
+                      <tr key={promo.id} className="hover:bg-white/5">
+                        <td className="p-4 font-black text-[#C8FF16]">{promo.code}</td>
+                        <td className="p-4 uppercase">{promo.discountType}</td>
+                        <td className="p-4">{promo.discountType === 'percentage' ? `${promo.discountValue}%` : formatInr(promo.discountValue)}</td>
+                        <td className="p-4">{promo.usedCount}</td>
+                        <td className="p-4">{promo.totalLimit}</td>
+                        <td className="p-4">{promo.isActive ? 'LIVE' : 'OFF'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 
@@ -763,10 +832,23 @@ function OrganizerDashboardContent() {
               <button onClick={() => setBroadcastModalOpen(false)}>✕</button>
             </div>
             <form
-              onSubmit={e => {
+              onSubmit={async e => {
                 e.preventDefault();
-                toast.success('BROADCAST DISPATCHED', 'SMS and Email sent to all pass holders.');
+                const eventId = selectedEventId === 'all' ? myEvents[0]?.id : selectedEventId;
+                if (eventId) {
+                  await fetch('/api/broadcasts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      eventId,
+                      title: 'ORGANIZER DISPATCH',
+                      body: broadcastMsg
+                    })
+                  }).catch(() => {});
+                }
+                toast.success('BROADCAST DISPATCHED', 'SMS and email queued to pass holders.');
                 setBroadcastModalOpen(false);
+                setBroadcastMsg('');
               }}
               className="space-y-4"
             >
@@ -798,12 +880,8 @@ function OrganizerDashboardContent() {
 
 export default function OrganizerDashboardPage() {
   return (
-    <ToastProvider>
-      <AuthProvider>
         <Suspense fallback={<div className="min-h-screen bg-black text-white p-12 font-mono">LOADING CONTROL...</div>}>
           <OrganizerDashboardContent />
         </Suspense>
-      </AuthProvider>
-    </ToastProvider>
   );
 }

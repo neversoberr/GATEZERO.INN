@@ -22,6 +22,7 @@ import {
   Lock
 } from 'lucide-react';
 import Link from 'next/link';
+import { printDocument } from '@/lib/exports';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -203,6 +204,14 @@ export function CheckoutModal({
         };
       });
 
+      const promoterCode = (() => {
+        try {
+          return sessionStorage.getItem('gz_ref') || undefined;
+        } catch {
+          return undefined;
+        }
+      })();
+
       const newOrder: Order = {
         id: `ord_${Date.now()}`,
         orderNumber,
@@ -230,6 +239,7 @@ export function CheckoutModal({
         paymentGatewayRef: `pay_sandbox_${Math.random().toString(36).substring(2, 10)}`,
         paidAt: new Date().toISOString(),
         refundStatus: 'none',
+        promoterCode,
         createdAt: new Date().toISOString()
       };
 
@@ -759,7 +769,23 @@ export function CheckoutModal({
                 <button
                   type="button"
                   onClick={() => {
-                    toast.success('PASS DOWNLOADED', 'Digital passcard saved to your device.');
+                    const cards = completedOrder.attendees.map((att, idx) => `
+                      <div class="pass">
+                        <div>
+                          <div class="muted">GATE ZERO ACCESS PASS</div>
+                          <h1>${att.fullName}</h1>
+                          <div>${att.tierName} • ${att.ticketCode}</div>
+                          <p>${completedOrder.eventTitle}<br/>${completedOrder.eventVenue}</p>
+                          <p class="muted">Order ${completedOrder.orderNumber}</p>
+                        </div>
+                        ${qrDataUrls[idx] ? `<img class="qr" src="${qrDataUrls[idx]}" alt="QR" />` : ''}
+                      </div>
+                    `).join('');
+                    printDocument(`Gate Zero Pass ${completedOrder.orderNumber}`, `
+                      <h2>Confirmed access</h2>
+                      ${cards}
+                    `);
+                    toast.success('PASS READY', 'Print or save as PDF from the dialog.');
                   }}
                   className="py-3 bg-[#f0f0ea] hover:bg-white border-2 border-black text-black font-black uppercase text-xs flex items-center justify-center gap-2"
                 >

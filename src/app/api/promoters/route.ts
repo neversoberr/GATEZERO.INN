@@ -27,6 +27,10 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    if (body.click && body.code) {
+      const promoter = db.incrementPromoterClicks(body.code);
+      return NextResponse.json({ success: true, promoter });
+    }
     const created = db.createPromoter(body);
     return NextResponse.json({ success: true, promoter: created });
   } catch (err: any) {

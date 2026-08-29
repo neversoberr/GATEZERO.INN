@@ -6,8 +6,8 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { RoleBanner } from '@/components/layout/RoleBanner';
 import { LoginModal } from '@/components/auth/LoginModal';
-import { ToastProvider, useToast } from '@/context/ToastContext';
-import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { useToast } from '@/context/ToastContext';
+import { useAuth } from '@/context/AuthContext';
 import { 
   Building2, 
   ShieldCheck, 
@@ -20,18 +20,13 @@ import {
 } from 'lucide-react';
 
 export default function OrganizerOnboardingPage() {
-  return (
-    <ToastProvider>
-      <AuthProvider>
-        <OnboardingContent />
-      </AuthProvider>
-    </ToastProvider>
-  );
+  return <OnboardingContent />;
 }
 
 function OnboardingContent() {
   const router = useRouter();
   const toast = useToast();
+  const { user, updateProfile, openLoginModal } = useAuth();
 
   const [step, setStep] = useState(1);
   const [entityType, setEntityType] = useState<'company' | 'individual'>('company');
@@ -52,11 +47,17 @@ function OnboardingContent() {
     setIsSubmitting(true);
 
     try {
+      if (!user) {
+        openLoginModal();
+        setIsSubmitting(false);
+        return;
+      }
       const slug = companyName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
       const res = await fetch('/api/organizers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          userId: user.id,
           name: companyName,
           slug,
           tagline: `Cultural Collective from ${city}`,
@@ -81,6 +82,9 @@ function OnboardingContent() {
 
       const data = await res.json();
       if (data.success) {
+        if (data.organizer?.id) {
+          await updateProfile({ role: 'organizer', organizerCompanyId: data.organizer.id });
+        }
         toast.success('KYC PROTOCOL SUBMITTED', `${companyName} application registered.`);
         router.push('/organizer/dashboard');
       }

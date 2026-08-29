@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/data/store';
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
@@ -13,6 +16,7 @@ export async function GET(
       return NextResponse.json({ success: false, error: 'Event not found' }, { status: 404 });
     }
 
+    db.incrementEventViews(event.id);
     const tiers = db.getTicketTiers(event.id);
     const organizer = db.getOrganizerById(event.organizerId);
 

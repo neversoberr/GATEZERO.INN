@@ -12,7 +12,8 @@ import {
   CheckInLog, 
   SettlementRecord, 
   AdminAuditLog,
-  PlatformStats
+  PlatformStats,
+  AppNotification
 } from '@/types';
 import {
   INITIAL_USERS,
@@ -24,10 +25,14 @@ import {
   INITIAL_ORDERS,
   INITIAL_CHECKINS,
   INITIAL_SETTLEMENTS,
-  INITIAL_AUDIT_LOGS
+  INITIAL_AUDIT_LOGS,
+  INITIAL_NOTIFICATIONS
 } from './initial-data';
 
+const DB_VERSION = 3;
+
 interface DatabaseSchema {
+  version: number;
   users: User[];
   organizers: OrganizerCompany[];
   events: Event[];
@@ -38,23 +43,40 @@ interface DatabaseSchema {
   checkIns: CheckInLog[];
   settlements: SettlementRecord[];
   auditLogs: AdminAuditLog[];
+  notifications: AppNotification[];
 }
 
 const DB_FILE_PATH = path.join(process.cwd(), 'data', 'gatezero_db.json');
 
 // In-memory fallback if file system access fails in edge runtimes
-let memoryDb: DatabaseSchema = {
-  users: [...INITIAL_USERS],
-  organizers: [...INITIAL_ORGANIZERS],
-  events: [...INITIAL_EVENTS],
-  ticketTiers: [...INITIAL_TICKET_TIERS],
-  promoCodes: [...INITIAL_PROMO_CODES],
-  promoters: [...INITIAL_PROMOTERS],
-  orders: [...INITIAL_ORDERS],
-  checkIns: [...INITIAL_CHECKINS],
-  settlements: [...INITIAL_SETTLEMENTS],
-  auditLogs: [...INITIAL_AUDIT_LOGS]
-};
+function seedDb(): DatabaseSchema {
+  return {
+    version: DB_VERSION,
+    users: [...INITIAL_USERS],
+    organizers: [...INITIAL_ORGANIZERS],
+    events: [...INITIAL_EVENTS],
+    ticketTiers: [...INITIAL_TICKET_TIERS],
+    promoCodes: [...INITIAL_PROMO_CODES],
+    promoters: [...INITIAL_PROMOTERS],
+    orders: [...INITIAL_ORDERS],
+    checkIns: [...INITIAL_CHECKINS],
+    settlements: [...INITIAL_SETTLEMENTS],
+    auditLogs: [...INITIAL_AUDIT_LOGS],
+    notifications: [...INITIAL_NOTIFICATIONS]
+  };
+}
+
+let memoryDb: DatabaseSchema = seedDb();
+
+function mergeById<T extends { id: string }>(current: T[] | undefined, seed: T[]): T[] {
+  const list = [...(current || [])];
+  seed.forEach((item) => {
+    if (!list.some((existing) => existing.id === item.id)) {
+      list.push(item);
+    }
+  });
+  return list;
+}
 
 function readDb(): DatabaseSchema {
   try {
@@ -68,19 +90,24 @@ function readDb(): DatabaseSchema {
     }
     const content = fs.readFileSync(DB_FILE_PATH, 'utf-8');
     const parsed = JSON.parse(content);
-    // Ensure all keys exist
-    return {
-      users: parsed.users || INITIAL_USERS,
-      organizers: parsed.organizers || INITIAL_ORGANIZERS,
-      events: parsed.events || INITIAL_EVENTS,
-      ticketTiers: parsed.ticketTiers || INITIAL_TICKET_TIERS,
-      promoCodes: parsed.promoCodes || INITIAL_PROMO_CODES,
-      promoters: parsed.promoters || INITIAL_PROMOTERS,
-      orders: parsed.orders || INITIAL_ORDERS,
+    const merged: DatabaseSchema = {
+      version: DB_VERSION,
+      users: mergeById(parsed.users, INITIAL_USERS),
+      organizers: mergeById(parsed.organizers, INITIAL_ORGANIZERS),
+      events: mergeById(parsed.events, INITIAL_EVENTS),
+      ticketTiers: mergeById(parsed.ticketTiers, INITIAL_TICKET_TIERS),
+      promoCodes: mergeById(parsed.promoCodes, INITIAL_PROMO_CODES),
+      promoters: mergeById(parsed.promoters, INITIAL_PROMOTERS),
+      orders: mergeById(parsed.orders, INITIAL_ORDERS),
       checkIns: parsed.checkIns || INITIAL_CHECKINS,
-      settlements: parsed.settlements || INITIAL_SETTLEMENTS,
+      settlements: mergeById(parsed.settlements, INITIAL_SETTLEMENTS),
       auditLogs: parsed.auditLogs || INITIAL_AUDIT_LOGS,
+      notifications: parsed.notifications || INITIAL_NOTIFICATIONS,
     };
+    if (parsed.version !== DB_VERSION) {
+      writeDb(merged);
+    }
+    return merged;
   } catch (err) {
     console.error('Failed reading DB file, using in-memory store', err);
     return memoryDb;
@@ -171,9 +198,9 @@ export const db = {
     const data = readDb();
     let list = [...data.events];
 
-    if (filters?.status) {
+    if (filters?.status && filters.status !== 'all') {
       list = list.filter(e => e.status === filters.status);
-    } else {
+    } else if (!filters?.status) {
       list = list.filter(e => e.status === 'published' || e.status === 'sold_out');
     }
 
@@ -255,6 +282,18 @@ export const db = {
     return readDb().events.find(e => e.id === id);
   },
 
+  getAllEvents(): Event[] {
+    return [...readDb().events];
+  },
+
+  incrementEventViews(id: string): void {
+    const data = readDb();
+    const event = data.events.find(e => e.id === id);
+    if (!event) return;
+    event.viewsCount += 1;
+    writeDb(data);
+  },
+
   createEvent(event: Event, tiers: TicketTier[]): Event {
     const data = readDb();
     data.events.unshift(event);
@@ -322,6 +361,41 @@ export const db = {
 
   getOrganizerById(id: string): OrganizerCompany | undefined {
     return readDb().organizers.find(o => o.id === id);
+  },
+
+  createOrganizer(organizer: OrganizerCompany, ownerUserId?: string): OrganizerCompany {
+    const data = readDb();
+    data.organizers.unshift(organizer);
+    if (ownerUserId) {
+      const user = data.users.find(u => u.id === ownerUserId);
+      if (user) {
+        user.role = 'organizer';
+        user.organizerCompanyId = organizer.id;
+        user.isVerified = true;
+      }
+    }
+    data.auditLogs.unshift({
+      id: `log_${Date.now()}`,
+      adminEmail: organizer.email,
+      action: 'ORGANIZER_ONBOARDED',
+      targetType: 'organizer',
+      targetId: organizer.id,
+      details: `KYC application received for ${organizer.name} (${organizer.city}).`,
+      timestamp: new Date().toISOString(),
+      ipAddress: '127.0.0.1'
+    });
+    data.notifications.unshift({
+      id: `ntf_${Date.now()}`,
+      userId: 'user_super_admin',
+      title: 'NEW ORGANIZER KYC',
+      body: `${organizer.name} submitted verification documents for review.`,
+      type: 'system',
+      read: false,
+      href: '/admin',
+      createdAt: new Date().toISOString()
+    });
+    writeDb(data);
+    return organizer;
   },
 
   updateOrganizer(id: string, updates: Partial<OrganizerCompany>): OrganizerCompany | null {
@@ -397,6 +471,17 @@ export const db = {
       }
     }
 
+    data.notifications.unshift({
+      id: `ntf_${Date.now()}`,
+      userId: order.userId,
+      title: 'ACCESS CONFIRMED',
+      body: `Order ${order.orderNumber} is live. ${order.attendees.length} pass${order.attendees.length === 1 ? '' : 'es'} for ${order.eventTitle}.`,
+      type: 'order',
+      read: false,
+      href: '/tickets',
+      createdAt: new Date().toISOString()
+    });
+
     writeDb(data);
     return order;
   },
@@ -456,6 +541,27 @@ export const db = {
       ipAddress: '127.0.0.1'
     });
 
+    data.notifications.unshift({
+      id: `ntf_${Date.now()}`,
+      userId: order.userId,
+      title: 'REFUND CLAIM FILED',
+      body: `Refund for ${order.orderNumber} is with Gate Zero compliance.`,
+      type: 'refund',
+      read: false,
+      href: '/tickets?tab=refunds',
+      createdAt: new Date().toISOString()
+    });
+    data.notifications.unshift({
+      id: `ntf_admin_${Date.now()}`,
+      userId: 'user_super_admin',
+      title: 'REFUND QUEUE',
+      body: `${order.customerName} requested a refund on ${order.orderNumber}.`,
+      type: 'refund',
+      read: false,
+      href: '/admin',
+      createdAt: new Date().toISOString()
+    });
+
     writeDb(data);
     return true;
   },
@@ -498,6 +604,19 @@ export const db = {
       ipAddress: '127.0.0.1'
     });
 
+    data.notifications.unshift({
+      id: `ntf_${Date.now()}`,
+      userId: order.userId,
+      title: approved ? 'REFUND RELEASED' : 'REFUND DECLINED',
+      body: approved
+        ? `₹${order.totalAmount.toLocaleString('en-IN')} will return to the original payment rail for ${order.orderNumber}.`
+        : `Refund claim for ${order.orderNumber} was declined. Pass remains valid.`,
+      type: 'refund',
+      read: false,
+      href: '/tickets?tab=refunds',
+      createdAt: new Date().toISOString()
+    });
+
     writeDb(data);
     return true;
   },
@@ -510,6 +629,18 @@ export const db = {
       const attendee = order.attendees.find(a => a.ticketCode.toUpperCase() === cleanCode);
       if (attendee) {
         return { order, attendee };
+      }
+    }
+
+    const needle = ticketCode.trim().toLowerCase();
+    if (needle.length >= 3) {
+      for (const order of data.orders) {
+        const attendee = order.attendees.find(a =>
+          a.fullName.toLowerCase().includes(needle) || a.email.toLowerCase().includes(needle)
+        );
+        if (attendee) {
+          return { order, attendee };
+        }
       }
     }
     return null;
@@ -761,6 +892,195 @@ export const db = {
   // AUDIT LOGS
   getAuditLogs(): AdminAuditLog[] {
     return readDb().auditLogs;
+  },
+
+  addAuditLog(entry: Omit<AdminAuditLog, 'id' | 'timestamp' | 'ipAddress'> & Partial<Pick<AdminAuditLog, 'id' | 'timestamp' | 'ipAddress'>>): void {
+    const data = readDb();
+    data.auditLogs.unshift({
+      id: entry.id || `log_${Date.now()}`,
+      adminEmail: entry.adminEmail,
+      action: entry.action,
+      targetType: entry.targetType,
+      targetId: entry.targetId,
+      details: entry.details,
+      timestamp: entry.timestamp || new Date().toISOString(),
+      ipAddress: entry.ipAddress || '127.0.0.1'
+    });
+    writeDb(data);
+  },
+
+  savePromoCode(promo: PromoCode): PromoCode {
+    const data = readDb();
+    const idx = data.promoCodes.findIndex(p => p.id === promo.id || p.code.toUpperCase() === promo.code.toUpperCase());
+    if (idx >= 0) {
+      data.promoCodes[idx] = promo;
+    } else {
+      data.promoCodes.unshift(promo);
+    }
+    data.auditLogs.unshift({
+      id: `log_${Date.now()}`,
+      adminEmail: 'organizer@gatezero.in',
+      action: 'PROMO_CREATED',
+      targetType: 'promo',
+      targetId: promo.id,
+      details: `Promo ${promo.code} (${promo.discountType} ${promo.discountValue}) is live.`,
+      timestamp: new Date().toISOString(),
+      ipAddress: '127.0.0.1'
+    });
+    writeDb(data);
+    return promo;
+  },
+
+  incrementPromoterClicks(code: string): PromoterProfile | undefined {
+    const data = readDb();
+    const promoter = data.promoters.find(p => p.code.toLowerCase() === code.toLowerCase());
+    if (!promoter) return undefined;
+    promoter.totalClicks += 1;
+    writeDb(data);
+    return promoter;
+  },
+
+  loginUser(emailOrPhone: string): User | undefined {
+    const needle = emailOrPhone.trim().toLowerCase();
+    return readDb().users.find(u =>
+      u.email.toLowerCase() === needle ||
+      u.phone.replace(/\s/g, '').includes(needle.replace(/\s/g, ''))
+    );
+  },
+
+  signupUser(input: { name: string; email: string; phone: string; city?: string }): { user: User; created: boolean } {
+    const existing = this.loginUser(input.email) || this.loginUser(input.phone);
+    if (existing) {
+      return { user: existing, created: false };
+    }
+    const user: User = {
+      id: `user_${Date.now()}`,
+      name: input.name.trim(),
+      email: input.email.trim().toLowerCase(),
+      phone: input.phone.trim(),
+      role: 'customer',
+      city: input.city || 'Mumbai',
+      savedEventIds: [],
+      followedOrganizerIds: [],
+      createdAt: new Date().toISOString(),
+      isVerified: true,
+      notificationPrefs: { email: true, sms: true, drops: true }
+    };
+    const data = readDb();
+    data.users.unshift(user);
+    data.notifications.unshift({
+      id: `ntf_welcome_${user.id}`,
+      userId: user.id,
+      title: 'WELCOME THROUGH THE GATE',
+      body: 'Your identity is live. Save events, buy passes, and keep QR tickets in your wallet.',
+      type: 'system',
+      read: false,
+      href: '/events',
+      createdAt: new Date().toISOString()
+    });
+    writeDb(data);
+    return { user, created: true };
+  },
+
+  getNotifications(userId: string): AppNotification[] {
+    return readDb().notifications
+      .filter(n => n.userId === userId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  },
+
+  markNotificationsRead(userId: string, notificationId?: string): void {
+    const data = readDb();
+    data.notifications.forEach(n => {
+      if (n.userId === userId && (!notificationId || n.id === notificationId)) {
+        n.read = true;
+      }
+    });
+    writeDb(data);
+  },
+
+  createNotification(notification: AppNotification): AppNotification {
+    const data = readDb();
+    data.notifications.unshift(notification);
+    writeDb(data);
+    return notification;
+  },
+
+  broadcastToEvent(eventId: string, title: string, body: string): number {
+    const data = readDb();
+    const recipients = new Set<string>();
+    data.orders
+      .filter(o => o.eventId === eventId && o.paymentStatus === 'paid')
+      .forEach(order => {
+        recipients.add(order.userId);
+        order.attendees.forEach(att => {
+          const match = data.users.find(u => u.email.toLowerCase() === att.email.toLowerCase());
+          if (match) recipients.add(match.id);
+        });
+      });
+
+    const timestamp = new Date().toISOString();
+    recipients.forEach(userId => {
+      data.notifications.unshift({
+        id: `ntf_bc_${Date.now()}_${userId}`,
+        userId,
+        title,
+        body,
+        type: 'broadcast',
+        read: false,
+        href: '/tickets',
+        createdAt: timestamp
+      });
+    });
+
+    data.auditLogs.unshift({
+      id: `log_${Date.now()}`,
+      adminEmail: 'organizer@gatezero.in',
+      action: 'ATTENDEE_BROADCAST',
+      targetType: 'event',
+      targetId: eventId,
+      details: `Broadcast "${title}" sent to ${recipients.size} attendees.`,
+      timestamp,
+      ipAddress: '127.0.0.1'
+    });
+
+    writeDb(data);
+    return recipients.size;
+  },
+
+  getReports() {
+    const data = readDb();
+    const paid = data.orders.filter(o => o.paymentStatus === 'paid' || o.paymentStatus === 'partially_refunded');
+    const gmvByCity: Record<string, number> = {};
+    const ticketsByCategory: Record<string, number> = {};
+    paid.forEach(order => {
+      gmvByCity[order.eventCity] = (gmvByCity[order.eventCity] || 0) + order.totalAmount;
+      const event = data.events.find(e => e.id === order.eventId);
+      const cat = event?.category || 'other';
+      ticketsByCategory[cat] = (ticketsByCategory[cat] || 0) + order.attendees.length;
+    });
+    const refunded = data.orders.filter(o => o.paymentStatus === 'refunded' || o.refundStatus === 'pending' || o.refundStatus === 'approved');
+    const topEvents = [...data.events]
+      .sort((a, b) => b.totalTicketsSold - a.totalTicketsSold)
+      .slice(0, 5)
+      .map(e => ({
+        id: e.id,
+        title: e.title,
+        city: e.city,
+        ticketsSold: e.totalTicketsSold,
+        capacity: e.totalCapacity,
+        status: e.status
+      }));
+
+    return {
+      gmvByCity,
+      ticketsByCategory,
+      refundCount: refunded.length,
+      paidOrderCount: paid.length,
+      refundRate: paid.length ? Number(((refunded.length / data.orders.length) * 100).toFixed(2)) : 0,
+      topEvents,
+      pendingKyc: data.organizers.filter(o => o.kycStatus === 'pending' || o.kycStatus === 'in_review').length,
+      pendingApprovals: data.events.filter(e => e.status === 'under_review').length
+    };
   },
 
   // PLATFORM STATS

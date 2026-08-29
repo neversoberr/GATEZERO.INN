@@ -8,8 +8,8 @@ import { RoleBanner } from '@/components/layout/RoleBanner';
 import { LoginModal } from '@/components/auth/LoginModal';
 import { PromoterProfile, Event } from '@/types';
 import { INITIAL_PROMOTERS, INITIAL_EVENTS } from '@/lib/data/initial-data';
-import { ToastProvider, useToast } from '@/context/ToastContext';
-import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { useToast } from '@/context/ToastContext';
+import { useAuth } from '@/context/AuthContext';
 import { 
   Share2, 
   Copy, 
@@ -23,13 +23,7 @@ import {
 } from 'lucide-react';
 
 export default function PromoterPage() {
-  return (
-    <ToastProvider>
-      <AuthProvider>
-        <PromoterPortalContent />
-      </AuthProvider>
-    </ToastProvider>
-  );
+  return <PromoterPortalContent />;
 }
 
 function PromoterPortalContent() {

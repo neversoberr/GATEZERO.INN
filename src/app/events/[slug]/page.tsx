@@ -11,8 +11,8 @@ import { CheckoutModal } from '@/components/checkout/CheckoutModal';
 import { EventCard } from '@/components/events/EventCard';
 import { Event, TicketTier, OrganizerCompany } from '@/types';
 import { INITIAL_EVENTS, INITIAL_TICKET_TIERS, INITIAL_ORGANIZERS } from '@/lib/data/initial-data';
-import { ToastProvider, useToast } from '@/context/ToastContext';
-import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { useToast } from '@/context/ToastContext';
+import { useAuth } from '@/context/AuthContext';
 import { 
   Calendar, 
   Clock, 
@@ -35,17 +35,11 @@ import {
 export default function EventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
 
-  return (
-    <ToastProvider>
-      <AuthProvider>
-        <EventDetailContent slug={slug} />
-      </AuthProvider>
-    </ToastProvider>
-  );
+  return <EventDetailContent slug={slug} />;
 }
 
 function EventDetailContent({ slug }: { slug: string }) {
-  const { user, isEventSaved, toggleSaveEvent, isOrganizerFollowed, toggleFollowOrganizer } = useAuth();
+  const { user, isEventSaved, toggleSaveEvent, isOrganizerFollowed, toggleFollowOrganizer, openLoginModal } = useAuth();
   const toast = useToast();
 
   const [event, setEvent] = useState<Event | null>(null);
@@ -87,6 +81,21 @@ function EventDetailContent({ slug }: { slug: string }) {
         }
       })
       .catch(() => {});
+
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get('ref');
+      if (ref) {
+        sessionStorage.setItem('gz_ref', ref);
+        fetch('/api/promoters', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ click: true, code: ref })
+        }).catch(() => {});
+      }
+    } catch {
+      // ignore
+    }
   }, [slug]);
 
   if (!event) {
@@ -125,6 +134,11 @@ function EventDetailContent({ slug }: { slug: string }) {
   };
 
   const handleProceedToCheckout = (quantities: Record<string, number>) => {
+    if (!user) {
+      openLoginModal();
+      toast.warning('IDENTITY REQUIRED', 'Sign in or create an account to mint passes.');
+      return;
+    }
     setSelectedQuantities(quantities);
     setIsCheckoutOpen(true);
   };

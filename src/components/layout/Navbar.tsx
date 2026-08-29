@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
@@ -21,7 +21,8 @@ import {
   Share2, 
   Bookmark, 
   Building2, 
-  FileText 
+  FileText,
+  Bell
 } from 'lucide-react';
 
 export function Navbar() {
@@ -34,6 +35,31 @@ export function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [passCount, setPassCount] = useState(0);
+  const [unreadAlerts, setUnreadAlerts] = useState(0);
+
+  useEffect(() => {
+    if (!user?.id) {
+      setPassCount(0);
+      setUnreadAlerts(0);
+      return;
+    }
+    fetch(`/api/orders?userId=${encodeURIComponent(user.id)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.orders) {
+          const upcoming = data.orders.filter((o: any) => o.paymentStatus !== 'refunded').reduce((sum: number, o: any) => sum + (o.attendees?.length || 0), 0);
+          setPassCount(upcoming);
+        }
+      })
+      .catch(() => {});
+    fetch(`/api/notifications?userId=${encodeURIComponent(user.id)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setUnreadAlerts(data.unread || 0);
+      })
+      .catch(() => {});
+  }, [user?.id]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,7 +144,7 @@ export function Navbar() {
               Categories
             </Link>
             <Link 
-              href="/organizer/subkulture-india" 
+              href="/organizers" 
               className="hover:text-[#C8FF16] transition-colors"
             >
               Organizers
@@ -157,9 +183,24 @@ export function Navbar() {
               <Ticket className="w-3.5 h-3.5 text-[#C8FF16]" />
               <span className="hidden sm:inline">Passes</span>
               <span className="bg-[#C8FF16] text-black px-1.5 py-0.2 text-[10px] font-black">
-                {user?.id === 'user_alex' ? '3' : '0'}
+                {passCount}
               </span>
             </Link>
+
+            {isAuthenticated && (
+              <Link
+                href="/tickets?tab=alerts"
+                className="relative hidden sm:flex items-center justify-center w-9 h-9 border border-white/10 bg-[#121410] hover:border-[#C8FF16]"
+                title="Notifications"
+              >
+                <Bell className="w-4 h-4 text-[#C8FF16]" />
+                {unreadAlerts > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 bg-[#FF314A] text-white text-[9px] font-black flex items-center justify-center">
+                    {unreadAlerts}
+                  </span>
+                )}
+              </Link>
+            )}
 
             {/* List Event Button (Signal Lime) */}
             <Link

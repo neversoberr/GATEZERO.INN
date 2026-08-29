@@ -14,6 +14,8 @@ interface AuthContextType {
   closeLoginModal: () => void;
   switchRole: (role: UserRole) => void;
   loginWithCredentials: (emailOrPhone: string, code?: string) => Promise<boolean>;
+  signup: (input: { name: string; email: string; phone: string; city?: string }) => Promise<boolean>;
+  updateProfile: (updates: Partial<User>) => Promise<boolean>;
   logout: () => void;
   isEventSaved: (eventId: string) => boolean;
   toggleSaveEvent: (eventId: string) => Promise<boolean>;
@@ -23,20 +25,28 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+function persist(user: User | null) {
+  try {
+    if (user) localStorage.setItem('gz_user', JSON.stringify(user));
+    else localStorage.removeItem('gz_user');
+  } catch {
+    // ignore storage errors
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(INITIAL_USERS[0]); // Default to Alex Chen (customer)
+  const [user, setUser] = useState<User | null>(INITIAL_USERS[0]);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const toast = useToast();
 
-  // Load user from localStorage if available
   useEffect(() => {
     try {
       const savedUser = localStorage.getItem('gz_user');
       if (savedUser) {
         setUser(JSON.parse(savedUser));
       }
-    } catch (e) {
-      // Ignore
+    } catch {
+      // ignore
     }
   }, []);
 
@@ -54,10 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     setUser(targetUser);
-    try {
-      localStorage.setItem('gz_user', JSON.stringify(targetUser));
-    } catch (e) {}
-
+    persist(targetUser);
     toast.info(
       `SWITCHED TO ${newRole.toUpperCase()} ROLE`,
       `Active identity: ${targetUser.name} (${targetUser.email})`
@@ -65,7 +72,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const loginWithCredentials = async (emailOrPhone: string): Promise<boolean> => {
-    // Check if matching initial user
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emailOrPhone })
+      });
+      const data = await res.json();
+      if (data.success && data.user) {
+        setUser(data.user);
+        persist(data.user);
+        setIsLoginModalOpen(false);
+        toast.success('ACCESS GRANTED', `Logged in as ${data.user.name}`);
+        return true;
+      }
+    } catch {
+      // fall through to local demo login
+    }
+
     const found = INITIAL_USERS.find(
       u => u.email.toLowerCase() === emailOrPhone.toLowerCase() || u.phone.includes(emailOrPhone)
     );
@@ -83,20 +107,59 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     setUser(activeUser);
-    try {
-      localStorage.setItem('gz_user', JSON.stringify(activeUser));
-    } catch (e) {}
-
+    persist(activeUser);
     setIsLoginModalOpen(false);
     toast.success('ACCESS GRANTED', `Logged in as ${activeUser.name}`);
     return true;
   };
 
+  const signup = async (input: { name: string; email: string; phone: string; city?: string }): Promise<boolean> => {
+    try {
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input)
+      });
+      const data = await res.json();
+      if (data.success && data.user) {
+        setUser(data.user);
+        persist(data.user);
+        setIsLoginModalOpen(false);
+        toast.success(
+          data.created ? 'IDENTITY CREATED' : 'WELCOME BACK',
+          `Signed in as ${data.user.name}`
+        );
+        return true;
+      }
+      toast.error('SIGNUP FAILED', data.error || 'Could not create identity');
+      return false;
+    } catch (err: any) {
+      toast.error('SIGNUP FAILED', err.message);
+      return false;
+    }
+  };
+
+  const updateProfile = async (updates: Partial<User>): Promise<boolean> => {
+    if (!user) return false;
+    const updatedUser = { ...user, ...updates, id: user.id, email: user.email };
+    setUser(updatedUser);
+    persist(updatedUser);
+    try {
+      await fetch('/api/user', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedUser)
+      });
+    } catch {
+      // local persist still succeeded
+    }
+    toast.success('CREDENTIALS UPDATED', 'Profile preferences synchronized.');
+    return true;
+  };
+
   const logout = () => {
     setUser(null);
-    try {
-      localStorage.removeItem('gz_user');
-    } catch (e) {}
+    persist(null);
     toast.info('SESSION TERMINATED', 'You have been logged out of Gate Zero.');
   };
 
@@ -118,9 +181,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const updatedUser = { ...user, savedEventIds: updatedSaved };
     setUser(updatedUser);
-    try {
-      localStorage.setItem('gz_user', JSON.stringify(updatedUser));
-    } catch (e) {}
+    persist(updatedUser);
 
     try {
       await fetch('/api/user/save-event', {
@@ -128,7 +189,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id, eventId })
       });
-    } catch (e) {}
+    } catch {
+      // ignore
+    }
 
     if (isSaved) {
       toast.info('REMOVED FROM SAVED', 'Event coordinates unpinned.');
@@ -157,9 +220,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const updatedUser = { ...user, followedOrganizerIds: updatedFollowed };
     setUser(updatedUser);
-    try {
-      localStorage.setItem('gz_user', JSON.stringify(updatedUser));
-    } catch (e) {}
+    persist(updatedUser);
 
     try {
       await fetch('/api/user/follow-organizer', {
@@ -167,7 +228,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id, organizerId })
       });
-    } catch (e) {}
+    } catch {
+      // ignore
+    }
 
     if (isFollowed) {
       toast.info('UNFOLLOWED', 'Removed from organizer updates.');
@@ -189,6 +252,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         closeLoginModal: () => setIsLoginModalOpen(false),
         switchRole,
         loginWithCredentials,
+        signup,
+        updateProfile,
         logout,
         isEventSaved,
         toggleSaveEvent,

@@ -9,10 +9,10 @@ import { RoleBanner } from '@/components/layout/RoleBanner';
 import { LoginModal } from '@/components/auth/LoginModal';
 import { AccessPassCard } from '@/components/tickets/AccessPassCard';
 import { EventCard } from '@/components/events/EventCard';
-import { Order, Event, OrganizerCompany } from '@/types';
+import { Order, Event, OrganizerCompany, AppNotification } from '@/types';
 import { INITIAL_ORDERS, INITIAL_EVENTS, INITIAL_ORGANIZERS } from '@/lib/data/initial-data';
-import { ToastProvider, useToast } from '@/context/ToastContext';
-import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { useToast } from '@/context/ToastContext';
+import { useAuth } from '@/context/AuthContext';
 import { 
   Ticket, 
   Bookmark, 
@@ -26,27 +26,36 @@ import {
   Lock,
   Smartphone,
   User,
-  Settings
+  Settings,
+  Bell
 } from 'lucide-react';
+import { printDocument, formatInr } from '@/lib/exports';
 
 function TicketsContent() {
   const searchParams = useSearchParams();
   const initialTab = (searchParams.get('tab') as any) || 'upcoming';
 
-  const { user, role, switchRole } = useAuth();
+  const { user, updateProfile, openLoginModal } = useAuth();
   const toast = useToast();
 
-  const [activeTab, setActiveTab] = useState<'upcoming' | 'past' | 'saved' | 'following' | 'invoices' | 'profile'>(
-    initialTab
-  );
+  type WalletTab = 'upcoming' | 'past' | 'saved' | 'following' | 'invoices' | 'refunds' | 'alerts' | 'profile';
+  const [activeTab, setActiveTab] = useState<WalletTab>(initialTab);
 
   const [orders, setOrders] = useState<Order[]>(INITIAL_ORDERS);
   const [allEvents, setAllEvents] = useState<Event[]>(INITIAL_EVENTS);
   const [organizers, setOrganizers] = useState<OrganizerCompany[]>(INITIAL_ORGANIZERS);
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const [profileName, setProfileName] = useState('');
+  const [profilePhone, setProfilePhone] = useState('');
+  const [profileCity, setProfileCity] = useState('Mumbai');
+  const [prefEmail, setPrefEmail] = useState(true);
+  const [prefSms, setPrefSms] = useState(true);
+  const [prefDrops, setPrefDrops] = useState(true);
 
   // Sync state
   const refreshOrders = () => {
-    fetch('/api/orders')
+    const qs = user?.id ? `?userId=${encodeURIComponent(user.id)}` : '';
+    fetch(`/api/orders${qs}`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.orders) {
@@ -56,8 +65,19 @@ function TicketsContent() {
       .catch(() => {});
   };
 
+  const refreshNotifications = () => {
+    if (!user?.id) return;
+    fetch(`/api/notifications?userId=${encodeURIComponent(user.id)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setNotifications(data.notifications || []);
+      })
+      .catch(() => {});
+  };
+
   useEffect(() => {
     refreshOrders();
+    refreshNotifications();
     fetch('/api/events')
       .then(res => res.json())
       .then(data => {
@@ -66,7 +86,26 @@ function TicketsContent() {
         }
       })
       .catch(() => {});
-  }, []);
+    fetch('/api/organizers')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.organizers) setOrganizers(data.organizers);
+      })
+      .catch(() => {});
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (initialTab) setActiveTab(initialTab);
+  }, [initialTab]);
+
+  useEffect(() => {
+    setProfileName(user?.name || '');
+    setProfilePhone(user?.phone || '');
+    setProfileCity(user?.city || 'Mumbai');
+    setPrefEmail(user?.notificationPrefs?.email ?? true);
+    setPrefSms(user?.notificationPrefs?.sms ?? true);
+    setPrefDrops(user?.notificationPrefs?.drops ?? true);
+  }, [user]);
 
   // Filter passes
   const userOrders = orders.filter(o => o.userId === user?.id || o.customerEmail === user?.email);
@@ -168,6 +207,30 @@ function TicketsContent() {
           >
             <Receipt className="w-4 h-4" />
             <span>INVOICES & TAX</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('refunds')}
+            className={`pb-3 px-3 uppercase font-bold flex items-center gap-2 border-b-2 whitespace-nowrap transition-colors ${
+              activeTab === 'refunds'
+                ? 'border-[#C8FF16] text-[#C8FF16]'
+                : 'border-transparent text-white/60 hover:text-white'
+            }`}
+          >
+            <History className="w-4 h-4" />
+            <span>REFUNDS</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('alerts')}
+            className={`pb-3 px-3 uppercase font-bold flex items-center gap-2 border-b-2 whitespace-nowrap transition-colors ${
+              activeTab === 'alerts'
+                ? 'border-[#C8FF16] text-[#C8FF16]'
+                : 'border-transparent text-white/60 hover:text-white'
+            }`}
+          >
+            <Bell className="w-4 h-4" />
+            <span>ALERTS ({notifications.filter(n => !n.read).length})</span>
           </button>
 
           <button
@@ -324,7 +387,24 @@ function TicketsContent() {
                         <td className="p-4">
                           <button
                             onClick={() => {
-                              toast.success('GST TAX INVOICE GENERATED', `Invoice downloaded for ${ord.orderNumber}`);
+                              printDocument(`GST Invoice ${ord.orderNumber}`, `
+                                <h2>Tax invoice</h2>
+                                <h1>${ord.orderNumber}</h1>
+                                <p class="muted">${new Date(ord.createdAt).toLocaleString('en-IN')} • ${ord.paymentMethod} • ${ord.paymentStatus}</p>
+                                <p><strong>Billed to:</strong> ${ord.customerName}<br/>${ord.customerEmail}<br/>${ord.customerPhone}</p>
+                                <p><strong>Event:</strong> ${ord.eventTitle}<br/>${ord.eventVenue}</p>
+                                <table>
+                                  <thead><tr><th>Item</th><th>Qty</th><th>Amount</th></tr></thead>
+                                  <tbody>
+                                    ${ord.items.map(item => `<tr><td>${item.tierName}</td><td>${item.quantity}</td><td>${formatInr(item.subtotal)}</td></tr>`).join('')}
+                                    <tr><td>Discount</td><td></td><td>- ${formatInr(ord.discountAmount)}</td></tr>
+                                    <tr><td>Platform fee</td><td></td><td>${formatInr(ord.platformFee)}</td></tr>
+                                    <tr><td>GST 18%</td><td></td><td>${formatInr(ord.gstAmount)}</td></tr>
+                                    <tr><td class="total">Total</td><td></td><td class="total">${formatInr(ord.totalAmount)}</td></tr>
+                                  </tbody>
+                                </table>
+                                <p class="muted">Gate Zero Technologies India Pvt. Ltd. • GST sandbox invoice for demo settlement.</p>
+                              `);
                             }}
                             className="px-2.5 py-1 bg-[#171914] hover:bg-[#C8FF16] hover:text-black border border-white/20 text-[10px] uppercase font-bold flex items-center gap-1"
                           >
@@ -347,6 +427,66 @@ function TicketsContent() {
             </div>
           )}
 
+          {activeTab === 'refunds' && (
+            <div className="space-y-4">
+              {userOrders.filter(o => o.refundRequested || o.refundStatus && o.refundStatus !== 'none').length > 0 ? (
+                userOrders.filter(o => o.refundRequested || (o.refundStatus && o.refundStatus !== 'none')).map(ord => (
+                  <div key={ord.id} className="p-6 bg-[#0e100c] border border-white/10 space-y-2">
+                    <div className="flex justify-between gap-4">
+                      <div>
+                        <div className="text-sm font-black uppercase text-white">{ord.eventTitle}</div>
+                        <div className="text-xs text-white/50">{ord.orderNumber} • {formatInr(ord.totalAmount)}</div>
+                        <p className="text-xs text-white/70 font-sans mt-2">Reason: {ord.refundReason || 'Not specified'}</p>
+                      </div>
+                      <span className={`px-2 py-1 text-[10px] uppercase font-bold h-fit ${
+                        ord.refundStatus === 'pending' ? 'bg-[#FF6B00]/20 text-[#FF6B00]' :
+                        ord.refundStatus === 'approved' || ord.paymentStatus === 'refunded' ? 'bg-[#C8FF16]/20 text-[#C8FF16]' :
+                        'bg-white/10 text-white/60'
+                      }`}>
+                        {ord.refundStatus || ord.paymentStatus}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="py-16 text-center bg-[#0d0f0c] border border-white/10 text-white/50">
+                  NO REFUND CLAIMS ON FILE
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'alerts' && (
+            <div className="space-y-3">
+              <div className="flex justify-end">
+                <button
+                  onClick={async () => {
+                    if (!user) return;
+                    await fetch('/api/notifications', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ userId: user.id })
+                    });
+                    refreshNotifications();
+                    toast.success('ALERTS CLEARED', 'All notifications marked read.');
+                  }}
+                  className="px-3 py-1.5 border border-white/20 text-[10px] uppercase font-bold hover:bg-white hover:text-black"
+                >
+                  Mark all read
+                </button>
+              </div>
+              {notifications.length > 0 ? notifications.map(n => (
+                <div key={n.id} className={`p-4 border ${n.read ? 'border-white/10 bg-[#0e100c]' : 'border-[#C8FF16]/40 bg-[#12160e]'}`}>
+                  <div className="text-[10px] text-[#C8FF16] uppercase">{n.type} • {new Date(n.createdAt).toLocaleString()}</div>
+                  <div className="text-sm font-black uppercase text-white mt-1">{n.title}</div>
+                  <p className="text-xs text-white/70 font-sans mt-1">{n.body}</p>
+                </div>
+              )) : (
+                <div className="py-16 text-center bg-[#0d0f0c] border border-white/10 text-white/50">NO ALERTS IN QUEUE</div>
+              )}
+            </div>
+          )}
+
           {/* 6. PROFILE & SECURITY */}
           {activeTab === 'profile' && (
             <div className="max-w-2xl bg-[#0e100c] border border-white/10 p-6 sm:p-8 space-y-6">
@@ -362,7 +502,8 @@ function TicketsContent() {
                   <label className="block text-[10px] uppercase text-white/50 mb-1">FULL NAME</label>
                   <input
                     type="text"
-                    defaultValue={user?.name}
+                    value={profileName}
+                    onChange={e => setProfileName(e.target.value)}
                     className="w-full bg-black border border-white/20 p-2.5 text-white"
                   />
                 </div>
@@ -381,9 +522,35 @@ function TicketsContent() {
                   <label className="block text-[10px] uppercase text-white/50 mb-1">VERIFIED PHONE (+91)</label>
                   <input
                     type="tel"
-                    defaultValue={user?.phone}
+                    value={profilePhone}
+                    onChange={e => setProfilePhone(e.target.value)}
                     className="w-full bg-black border border-white/20 p-2.5 text-white"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase text-white/50 mb-1">HOME CITY</label>
+                  <input
+                    type="text"
+                    value={profileCity}
+                    onChange={e => setProfileCity(e.target.value)}
+                    className="w-full bg-black border border-white/20 p-2.5 text-white"
+                  />
+                </div>
+
+                <div className="pt-4 border-t border-white/10 space-y-3">
+                  <label className="flex items-center justify-between">
+                    <span>Email drops</span>
+                    <input type="checkbox" checked={prefEmail} onChange={e => setPrefEmail(e.target.checked)} className="accent-[#C8FF16] w-4 h-4" />
+                  </label>
+                  <label className="flex items-center justify-between">
+                    <span>SMS / WhatsApp</span>
+                    <input type="checkbox" checked={prefSms} onChange={e => setPrefSms(e.target.checked)} className="accent-[#C8FF16] w-4 h-4" />
+                  </label>
+                  <label className="flex items-center justify-between">
+                    <span>New event drops from followed hosts</span>
+                    <input type="checkbox" checked={prefDrops} onChange={e => setPrefDrops(e.target.checked)} className="accent-[#C8FF16] w-4 h-4" />
+                  </label>
                 </div>
 
                 <div className="pt-4 border-t border-white/10 flex items-center justify-between">
@@ -397,7 +564,18 @@ function TicketsContent() {
 
               <button
                 type="button"
-                onClick={() => toast.success('CREDENTIALS UPDATED', 'Profile preferences synchronized.')}
+                onClick={() => {
+                  if (!user) {
+                    openLoginModal();
+                    return;
+                  }
+                  updateProfile({
+                    name: profileName,
+                    phone: profilePhone,
+                    city: profileCity,
+                    notificationPrefs: { email: prefEmail, sms: prefSms, drops: prefDrops }
+                  });
+                }}
                 className="w-full py-3 bg-[#C8FF16] text-black font-black uppercase text-xs hover:bg-[#b8ea14]"
               >
                 SAVE PREFERENCES ↗
@@ -417,12 +595,8 @@ function TicketsContent() {
 
 export default function TicketsPage() {
   return (
-    <ToastProvider>
-      <AuthProvider>
         <Suspense fallback={<div className="min-h-screen bg-black text-white p-12 font-mono">LOADING WALLET...</div>}>
           <TicketsContent />
         </Suspense>
-      </AuthProvider>
-    </ToastProvider>
   );
 }

@@ -5,13 +5,10 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { RoleBanner } from '@/components/layout/RoleBanner';
 import { LoginModal } from '@/components/auth/LoginModal';
-import { ToastProvider } from '@/context/ToastContext';
-import { AuthProvider } from '@/context/AuthContext';
+
 
 export default function TermsPage() {
   return (
-    <ToastProvider>
-      <AuthProvider>
         <div className="min-h-screen bg-[#050505] text-[#F1F1EB] flex flex-col font-mono selection:bg-[#C8FF16] selection:text-black">
           <RoleBanner />
           <Navbar />
@@ -63,7 +60,5 @@ export default function TermsPage() {
           <Footer />
           <LoginModal />
         </div>
-      </AuthProvider>
-    </ToastProvider>
   );
 }

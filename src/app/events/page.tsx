@@ -12,8 +12,7 @@ import { QuickViewModal } from '@/components/events/QuickViewModal';
 import { InteractiveMap } from '@/components/events/InteractiveMap';
 import { Event } from '@/types';
 import { INITIAL_EVENTS } from '@/lib/data/initial-data';
-import { ToastProvider } from '@/context/ToastContext';
-import { AuthProvider } from '@/context/AuthContext';
+
 import { Compass, Sparkles, FilterX } from 'lucide-react';
 
 function EventsContent() {
@@ -219,12 +218,8 @@ function EventsContent() {
 
 export default function EventsPage() {
   return (
-    <ToastProvider>
-      <AuthProvider>
         <Suspense fallback={<div className="min-h-screen bg-black text-white p-12 font-mono">LOADING RADAR...</div>}>
           <EventsContent />
         </Suspense>
-      </AuthProvider>
-    </ToastProvider>
   );
 }

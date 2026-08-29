@@ -21,6 +21,22 @@ export interface User {
   isVerified?: boolean;
   organizerCompanyId?: string;
   promoterCode?: string;
+  notificationPrefs?: {
+    email: boolean;
+    sms: boolean;
+    drops: boolean;
+  };
+}
+
+export interface AppNotification {
+  id: string;
+  userId: string;
+  title: string;
+  body: string;
+  type: 'order' | 'event' | 'refund' | 'broadcast' | 'system' | 'payout';
+  read: boolean;
+  href?: string;
+  createdAt: string;
 }
 
 export type EventCategory = 

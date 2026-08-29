@@ -15,8 +15,8 @@ import {
   INITIAL_AUDIT_LOGS,
   INITIAL_USERS
 } from '@/lib/data/initial-data';
-import { ToastProvider, useToast } from '@/context/ToastContext';
-import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { useToast } from '@/context/ToastContext';
+import { useAuth } from '@/context/AuthContext';
 import { 
   ShieldAlert, 
   ShieldCheck, 
@@ -36,20 +36,15 @@ import {
 } from 'lucide-react';
 
 export default function AdminPage() {
-  return (
-    <ToastProvider>
-      <AuthProvider>
-        <AdminCommandCenterContent />
-      </AuthProvider>
-    </ToastProvider>
-  );
+  return <AdminCommandCenterContent />;
 }
 
 function CommandCenterContent() {
   const { user } = useAuth();
   const toast = useToast();
 
-  const [activeTab, setActiveTab] = useState<'kpis' | 'events' | 'kyc' | 'settlements' | 'refunds' | 'users' | 'audit'>('kpis');
+  const [activeTab, setActiveTab] = useState<'kpis' | 'events' | 'kyc' | 'settlements' | 'refunds' | 'users' | 'audit' | 'reports'>('kpis');
+  const [reports, setReports] = useState<any>(null);
   
   const [events, setEvents] = useState<Event[]>(INITIAL_EVENTS);
   const [organizers, setOrganizers] = useState<OrganizerCompany[]>(INITIAL_ORGANIZERS);
@@ -67,6 +62,12 @@ function CommandCenterContent() {
           if (data.organizers) setOrganizers(data.organizers);
           if (data.settlements) setSettlements(data.settlements);
           if (data.auditLogs) setAuditLogs(data.auditLogs);
+          if (data.orders) setOrders(data.orders);
+          if (data.reports) setReports(data.reports);
+          if (data.users) setUsersList(data.users);
+          if (data.stats) {
+            // keep live stats available via reports/stats payload
+          }
         }
       })
       .catch(() => {});
@@ -85,16 +86,31 @@ function CommandCenterContent() {
 
   const handleToggleFeature = async (eventId: string, current: boolean) => {
     setEvents(prev => prev.map(e => e.id === eventId ? { ...e, isFeatured: !current } : e));
+    await fetch('/api/admin/moderate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eventId, featured: !current })
+    }).catch(() => {});
     toast.info('FEATURED STATUS UPDATED', `Event billboard priority adjusted.`);
   };
 
-  const handleApproveEvent = (eventId: string) => {
+  const handleApproveEvent = async (eventId: string) => {
     setEvents(prev => prev.map(e => e.id === eventId ? { ...e, status: 'published' } : e));
+    await fetch('/api/admin/moderate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eventId, action: 'approve' })
+    }).catch(() => {});
     toast.success('EVENT APPROVED', 'Listing is now active across all Gate Zero radars.');
   };
 
-  const handleApproveKyc = (orgId: string) => {
+  const handleApproveKyc = async (orgId: string) => {
     setOrganizers(prev => prev.map(o => o.id === orgId ? { ...o, isVerified: true, kycStatus: 'verified' } : o));
+    await fetch('/api/admin/kyc', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ organizerId: orgId, approved: true })
+    }).catch(() => {});
     toast.success('KYC APPROVED', 'Organizer verified badge and payout gateway unlocked.');
   };
 
@@ -172,6 +188,7 @@ function CommandCenterContent() {
             { id: 'settlements', label: `Payouts & Settlements (${settlements.length})`, icon: DollarSign },
             { id: 'refunds', label: `Disputes & Refunds (${pendingRefunds.length})`, icon: RotateCcw },
             { id: 'users', label: 'User Roles', icon: Users },
+            { id: 'reports', label: 'Reports', icon: Sparkles },
             { id: 'audit', label: 'Audit Log Stream', icon: Terminal },
           ].map(tab => {
             const Icon = tab.icon;
@@ -289,6 +306,14 @@ function CommandCenterContent() {
                       </td>
                       <td className="p-4">
                         <div className="flex items-center gap-2">
+                          {ev.status === 'under_review' && (
+                            <button
+                              onClick={() => handleApproveEvent(ev.id)}
+                              className="px-2 py-1 bg-[#C8FF16] text-black text-[10px] uppercase font-black"
+                            >
+                              APPROVE
+                            </button>
+                          )}
                           <button
                             onClick={() => handleToggleFeature(ev.id, !!ev.isFeatured)}
                             className={`px-2 py-1 border text-[10px] uppercase font-bold ${
@@ -472,6 +497,46 @@ function CommandCenterContent() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+
+          {activeTab === 'reports' && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="p-5 bg-[#0e100c] border border-white/10">
+                  <div className="text-[10px] text-white/40 uppercase">Paid orders</div>
+                  <div className="text-2xl font-black text-white">{reports?.paidOrderCount ?? orders.filter(o => o.paymentStatus === 'paid').length}</div>
+                </div>
+                <div className="p-5 bg-[#0e100c] border border-white/10">
+                  <div className="text-[10px] text-white/40 uppercase">Refund rate</div>
+                  <div className="text-2xl font-black text-[#FF6B00]">{reports?.refundRate ?? 0}%</div>
+                </div>
+                <div className="p-5 bg-[#0e100c] border border-white/10">
+                  <div className="text-[10px] text-white/40 uppercase">Pending KYC / listings</div>
+                  <div className="text-2xl font-black text-[#C8FF16]">{reports?.pendingKyc ?? pendingKycCount} / {reports?.pendingApprovals ?? pendingApprovalsCount}</div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="p-6 bg-[#0e100c] border border-white/10 space-y-3">
+                  <div className="text-xs font-black uppercase text-white pb-2 border-b border-white/10">GMV by city</div>
+                  {Object.entries((reports?.gmvByCity || {}) as Record<string, number>).map(([city, value]) => (
+                    <div key={city} className="flex justify-between text-xs">
+                      <span className="text-white/60 uppercase">{city}</span>
+                      <span className="font-bold text-white">₹{Number(value).toLocaleString('en-IN')}</span>
+                    </div>
+                  ))}
+                  {!reports?.gmvByCity && <div className="text-xs text-white/40">Loading live report…</div>}
+                </div>
+                <div className="p-6 bg-[#0e100c] border border-white/10 space-y-3">
+                  <div className="text-xs font-black uppercase text-white pb-2 border-b border-white/10">Top events by passes</div>
+                  {(reports?.topEvents || events.slice(0, 5)).map((ev: any) => (
+                    <div key={ev.id} className="flex justify-between text-xs">
+                      <span className="text-white font-bold truncate pr-4">{ev.title}</span>
+                      <span className="text-[#C8FF16]">{ev.ticketsSold ?? ev.totalTicketsSold}/{ev.capacity ?? ev.totalCapacity}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 

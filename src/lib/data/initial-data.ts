@@ -8,7 +8,8 @@ import {
   PromoCode, 
   CheckInLog, 
   SettlementRecord, 
-  AdminAuditLog 
+  AdminAuditLog,
+  AppNotification
 } from '@/types';
 
 export const INITIAL_USERS: User[] = [
@@ -22,7 +23,8 @@ export const INITIAL_USERS: User[] = [
     savedEventIds: ['ev_steelworks', 'ev_offgrid_goa', 'ev_fifth_room'],
     followedOrganizerIds: ['org_subkulture', 'org_anomaly'],
     createdAt: '2026-01-15T10:00:00Z',
-    isVerified: true
+    isVerified: true,
+    notificationPrefs: { email: true, sms: true, drops: true }
   },
   {
     id: 'user_karan',
@@ -224,6 +226,39 @@ export const INITIAL_ORGANIZERS: OrganizerCompany[] = [
     kycStatus: 'verified',
     teamMembers: [
       { userId: 'user_indiepunch_lead', name: 'Rohan Gupta', email: 'rohan@indiepunch.live', role: 'owner' }
+    ]
+  },
+  {
+    id: 'org_pulse_hyd',
+    slug: 'pulse-hyderabad',
+    name: 'Pulse Hyderabad',
+    tagline: 'Deccan Electronic Culture & Warehouse Sound',
+    description: 'Emerging Hyderabad collective staging warehouse techno, bass nights, and independent visual arts in the Deccan plateau.',
+    logoUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=300&auto=format&fit=crop',
+    coverUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1200&auto=format&fit=crop',
+    isVerified: false,
+    city: 'Hyderabad',
+    country: 'India',
+    website: 'https://pulsehyd.in',
+    instagram: '@pulse_hyd',
+    email: 'crew@pulsehyd.in',
+    phone: '+91 98490 11220',
+    followersCount: 2100,
+    totalEventsHosted: 4,
+    rating: 4.7,
+    totalReviews: 48,
+    categories: ['underground', 'music'],
+    kycStatus: 'in_review',
+    gstin: '36AABCP8821H1Z4',
+    panNumber: 'AABCP8821H',
+    bankDetails: {
+      accountName: 'PULSE HYDERABAD LLP',
+      accountNumber: '50100088219012',
+      ifscCode: 'HDFC0000456',
+      bankName: 'HDFC Bank, Banjara Hills'
+    },
+    teamMembers: [
+      { userId: 'user_pulse_owner', name: 'Sana Reddy', email: 'sana@pulsehyd.in', role: 'owner' }
     ]
   }
 ];
@@ -854,6 +889,55 @@ Every participant receives access to an individual Eurorack demo rig supplied wi
     
     createdAt: '2026-08-12T16:00:00Z',
     updatedAt: '2026-08-28T10:00:00Z'
+  },
+  {
+    id: 'ev_pulse_hangar',
+    code: 'GZ-HYD-010',
+    slug: 'pulse-hangar-protocol',
+    title: 'Pulse Hangar Protocol',
+    tagline: 'Warehouse techno in a decommissioned air-freight hangar',
+    description: `A first-wave Hyderabad warehouse dispatch currently under Gate Zero listing review. Funktion-One stacks, 8-hour runtime, and a no-flash policy.`,
+    category: 'underground',
+    subcategory: 'Warehouse Techno',
+    tags: ['Techno', 'Hyderabad', 'Warehouse'],
+    format: 'warehouse',
+    status: 'under_review',
+    isFeatured: false,
+    isTrending: false,
+    isSellingFast: false,
+    isVerifiedOrganizer: false,
+    accentColor: '#C8FF16',
+    posterUrl: 'https://images.unsplash.com/photo-1574391884720-bbc3740c59d1?q=80&w=800&auto=format&fit=crop',
+    coverBannerUrl: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1600&auto=format&fit=crop',
+    startDate: '2026-10-24T21:00:00+05:30',
+    endDate: '2026-10-25T06:00:00+05:30',
+    doorsOpenTime: '21:00 IST',
+    timezone: 'IST (UTC+05:30)',
+    city: 'Hyderabad',
+    venueName: 'Freight Hangar 04 // Shamshabad',
+    venueAddress: 'Air Freight Road, Shamshabad, Hyderabad 500409',
+    coordinates: { lat: 17.2403, lng: 78.4294 },
+    ageRestriction: '21+',
+    refundPolicyText: 'Refundable up to 48 hours before doors.',
+    organizerId: 'org_pulse_hyd',
+    organizerName: 'Pulse Hyderabad',
+    organizerLogo: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=300&auto=format&fit=crop',
+    organizerSlug: 'pulse-hyderabad',
+    lineup: [
+      { id: 'art_hyd_1', name: 'GRIDLOCK (HYD)', role: 'Headliner', setTime: '01:00 - 04:00' }
+    ],
+    schedule: [
+      { time: '21:00', title: 'Doors', stage: 'Hangar' }
+    ],
+    faqs: [],
+    viewsCount: 420,
+    savedCount: 38,
+    totalCapacity: 400,
+    totalTicketsSold: 0,
+    minPrice: 999,
+    maxPrice: 2499,
+    createdAt: '2026-08-27T09:00:00Z',
+    updatedAt: '2026-08-28T11:00:00Z'
   }
 ];
 
@@ -1207,6 +1291,24 @@ export const INITIAL_TICKET_TIERS: TicketTier[] = [
     isSecret: true,
     accessCode: 'BLACKOUT',
     refundEligibility: 'non_refundable'
+  },
+  {
+    id: 'tier_pulse_gen',
+    eventId: 'ev_pulse_hangar',
+    name: 'Hangar Access Pass',
+    type: 'general',
+    price: 999,
+    totalQuantity: 300,
+    soldQuantity: 0,
+    reservedQuantity: 0,
+    description: 'General warehouse floor access pending listing approval.',
+    perks: ['Full night access'],
+    minPerOrder: 1,
+    maxPerOrder: 4,
+    salesStartDate: '2026-08-27T00:00:00Z',
+    salesEndDate: '2026-10-24T21:00:00Z',
+    entryValidity: 'Valid all night',
+    refundEligibility: 'refundable_48h'
   }
 ];
 
@@ -1461,6 +1563,58 @@ export const INITIAL_ORDERS: Order[] = [
     paidAt: '2026-08-15T10:00:00Z',
     refundStatus: 'none',
     createdAt: '2026-08-15T09:58:00Z'
+  },
+  {
+    id: 'ord_sample_004',
+    orderNumber: 'GZ-ORD-2026-55201',
+    userId: 'user_alex',
+    customerName: 'Alex Chen',
+    customerEmail: 'alex.chen@gatezero.in',
+    customerPhone: '+91 98201 44520',
+    eventId: 'ev_khaos_delhi',
+    eventTitle: 'KHAOS Delhi: Brutalist Design & Bass',
+    eventDate: '2026-09-18T20:00:00+05:30',
+    eventVenue: 'The Concrete Yard // Dhan Mill Compound, Delhi',
+    eventCity: 'Delhi',
+    eventPosterUrl: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?q=80&w=800&auto=format&fit=crop',
+    items: [
+      {
+        ticketTierId: 'tier_khaos_gen',
+        tierName: 'General Admission',
+        pricePerUnit: 799,
+        quantity: 1,
+        subtotal: 799
+      }
+    ],
+    attendees: [
+      {
+        id: 'att_004_1',
+        ticketCode: 'GZ-TCK-552019',
+        tierName: 'General Admission',
+        fullName: 'Alex Chen',
+        email: 'alex.chen@gatezero.in',
+        phone: '+91 98201 44520',
+        isCheckedIn: false,
+        gateAssigned: 'GATE 01',
+        qrPayload: 'GZ::ev_khaos_delhi::tier_khaos_gen::GZ-TCK-552019::alex.chen@gatezero.in',
+        securityHash: '7c21aa90ef12b441'
+      }
+    ],
+    subtotal: 799,
+    discountAmount: 0,
+    platformFee: 49,
+    gstAmount: 152.6,
+    totalAmount: 1000.6,
+    currency: 'INR',
+    paymentStatus: 'paid',
+    paymentMethod: 'UPI',
+    paymentGatewayRef: 'pay_rzp_mock_552019',
+    paidAt: '2026-08-18T12:00:00Z',
+    refundRequested: true,
+    refundReason: 'Schedule conflict / Emergency',
+    refundStatus: 'pending',
+    refundAmount: 1000.6,
+    createdAt: '2026-08-18T11:58:00Z'
   }
 ];
 
@@ -1574,6 +1728,59 @@ export const INITIAL_AUDIT_LOGS: AdminAuditLog[] = [
   }
 ];
 
+export const INITIAL_NOTIFICATIONS: AppNotification[] = [
+  {
+    id: 'ntf_alex_01',
+    userId: 'user_alex',
+    title: 'PASSES MINTED',
+    body: 'Steelworks: After Dark — 2 Phase 2 passes are in your wallet.',
+    type: 'order',
+    read: false,
+    href: '/tickets',
+    createdAt: '2026-08-25T14:22:40Z'
+  },
+  {
+    id: 'ntf_alex_02',
+    userId: 'user_alex',
+    title: 'REFUND IN REVIEW',
+    body: 'Your KHAOS Delhi claim is with Gate Zero compliance.',
+    type: 'refund',
+    read: false,
+    href: '/tickets?tab=refunds',
+    createdAt: '2026-08-22T11:05:00Z'
+  },
+  {
+    id: 'ntf_alex_03',
+    userId: 'user_alex',
+    title: 'SECRET COORDINATES SOON',
+    body: 'Steelworks location pin drops 4 hours before doors.',
+    type: 'event',
+    read: true,
+    href: '/events/steelworks-after-dark',
+    createdAt: '2026-08-26T09:00:00Z'
+  },
+  {
+    id: 'ntf_org_01',
+    userId: 'user_karan',
+    title: 'SETTLEMENT SCHEDULED',
+    body: '₹14,90,317 for Steelworks lands 08.09.26.',
+    type: 'payout',
+    read: false,
+    href: '/organizer/dashboard',
+    createdAt: '2026-08-27T08:00:00Z'
+  },
+  {
+    id: 'ntf_admin_01',
+    userId: 'user_super_admin',
+    title: 'KYC IN REVIEW',
+    body: 'Pulse Hyderabad submitted GSTIN and bank details.',
+    type: 'system',
+    read: false,
+    href: '/admin',
+    createdAt: '2026-08-27T09:10:00Z'
+  }
+];
+
 export const CITIES = [
   { id: 'all', name: 'All Cities', code: 'ALL', count: 9 },
   { id: 'mumbai', name: 'Mumbai', code: 'MUM', count: 4, coords: { lat: 18.922, lng: 72.834 } },
@@ -1581,7 +1788,7 @@ export const CITIES = [
   { id: 'delhi', name: 'Delhi NCR', code: 'DEL', count: 1, coords: { lat: 28.613, lng: 77.209 } },
   { id: 'goa', name: 'Goa', code: 'GOA', count: 1, coords: { lat: 15.299, lng: 74.124 } },
   { id: 'pune', name: 'Pune', code: 'PNE', count: 1, coords: { lat: 18.520, lng: 73.856 } },
-  { id: 'hyderabad', name: 'Hyderabad', code: 'HYD', count: 0, coords: { lat: 17.385, lng: 78.486 } },
+  { id: 'hyderabad', name: 'Hyderabad', code: 'HYD', count: 1, coords: { lat: 17.385, lng: 78.486 } },
   { id: 'dubai', name: 'Dubai', code: 'DXB', count: 0, coords: { lat: 25.204, lng: 55.270 } }
 ];
 
