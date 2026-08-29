@@ -14,7 +14,7 @@
 ## Key Features
 
 ### 1. Public Discovery & Visual Identity
-- **Brutalist Editorial Aesthetic**: Absolute black architectural backdrops (`#050505`), signal lime accents (`#C8FF16`), monospaced technical codes (`GZ-MUM-001`, `ACCESS HASH`), industrial grid overlays, and oversized Swiss typography.
+- **Kinetic Typography System**: Rich black backdrops (`#09090B`), acid lime accents (`#D4F00D`), Space Grotesk display type with a JetBrains Mono technical voice (`GZ-MUM-001`, `ACCESS HASH`), infinite marquees, scroll parallax, massive background numerals, hard color inversions, sharp 2px zinc borders — flat, loud, always moving.
 - **Dynamic Search Console**: Multi-parameter search by event title, artist lineup, venue, city, and category.
 - **Tactical Radar & Interactive Map**: Multi-city coordinate pins across Mumbai, Bengaluru, Delhi, Goa, and Pune with instant previews.
 - **Discovery Engine**: Grid, list, and map views with filters for venue format (Warehouse, Rooftop, Secret Location), age restriction (18+, 21+, All Ages), max price slider, verified hosts only, and instant active filter chips.
@@ -46,7 +46,9 @@
 
 - **Framework**: Next.js 16 (App Router, Server Components & Dynamic Route Handlers)
 - **Language**: TypeScript with strict type checking
-- **Styling**: Tailwind CSS with custom brutalist dark-light theme, grid overlays, and scanline animations
+- **Styling**: Tailwind CSS v4 with centralized design tokens (`@theme` in `globals.css`), grid overlays, scanlines, and print-grain noise
+- **Motion**: Framer Motion (scroll parallax) + pure-CSS infinite marquees (SSR-safe, `prefers-reduced-motion` aware)
+- **Fonts**: Self-hosted variable fonts — Space Grotesk (display/body) + JetBrains Mono (technical voice)
 - **QR Engine**: `qrcode` (SVG and High-Contrast Data URLs)
 - **Celebration Effects**: `canvas-confetti`
 - **Icons**: `lucide-react`

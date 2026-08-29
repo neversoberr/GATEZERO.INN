@@ -1,19 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { Event } from '@/types';
 import { useAuth } from '@/context/AuthContext';
-import { 
-  Bookmark, 
-  MapPin, 
-  Calendar, 
-  Clock, 
-  ShieldCheck, 
-  ArrowUpRight, 
-  Zap, 
-  Eye, 
-  Share2 
+import {
+  Bookmark,
+  MapPin,
+  Clock,
+  ShieldCheck,
+  ArrowUpRight,
+  Zap,
+  Eye,
+  Share2
 } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
 
@@ -26,15 +25,13 @@ export function EventCard({ event, onQuickView }: EventCardProps) {
   const { isEventSaved, toggleSaveEvent } = useAuth();
   const saved = isEventSaved(event.id);
   const toast = useToast();
-  const [isHovered, setIsHovered] = useState(false);
 
   const eventDateObj = new Date(event.startDate);
-  const formattedDate = eventDateObj.toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric'
-  }).toUpperCase();
-
+  const dayNum = String(eventDateObj.getDate()).padStart(2, '0');
+  const monthStr = eventDateObj
+    .toLocaleDateString('en-GB', { month: 'short' })
+    .toUpperCase();
+  const yearStr = eventDateObj.getFullYear();
   const formattedTime = event.doorsOpenTime;
 
   const handleShare = (e: React.MouseEvent) => {
@@ -61,145 +58,140 @@ export function EventCard({ event, onQuickView }: EventCardProps) {
   };
 
   return (
-    <div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="group relative bg-[#0e100c] border border-white/10 hover:border-[#C8FF16] transition-all duration-300 flex flex-col justify-between overflow-hidden"
-      style={{
-        clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%)'
-      }}
-    >
-      {/* Top Media & Poster */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-black/80">
+    <article className="group relative flex flex-col overflow-hidden border-2 border-border bg-background transition-colors duration-300 hover:border-accent hover:bg-accent">
+      {/* Poster */}
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
         <img
           src={event.posterUrl}
           alt={event.title}
-          className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+          loading="lazy"
+          className="h-full w-full object-cover grayscale-[40%] transition-all duration-300 group-hover:grayscale-0"
         />
 
-        {/* Poster Overlay Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0e100c] via-black/20 to-black/60 pointer-events-none" />
-
-        {/* Top Badges */}
-        <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between z-10 font-mono text-[10px]">
-          <span className="px-2 py-0.5 bg-black/80 backdrop-blur-md border border-white/20 text-white uppercase tracking-wider font-bold">
+        {/* Badges */}
+        <div className="absolute left-3 right-3 top-3 flex items-start justify-between gap-2 font-mono text-[10px] uppercase tracking-widest">
+          <span className="border border-border bg-background/90 px-2 py-1 font-bold text-foreground transition-colors group-hover:border-black/40 group-hover:bg-black/80 group-hover:text-accent">
             {event.code}
           </span>
-
           <div className="flex items-center gap-1.5">
             {event.isSellingFast && (
-              <span className="px-2 py-0.5 bg-[#FF6B00] text-black uppercase tracking-wider font-black flex items-center gap-1">
-                <Zap className="w-2.5 h-2.5 fill-black" />
+              <span className="flex items-center gap-1 bg-danger px-2 py-1 font-bold text-white">
+                <Zap className="h-2.5 w-2.5 fill-white" aria-hidden="true" />
                 SELLING FAST
               </span>
             )}
             {event.isFeatured && (
-              <span className="px-2 py-0.5 bg-[#C8FF16] text-black uppercase tracking-wider font-black">
+              <span className="bg-foreground px-2 py-1 font-bold text-accent-foreground">
                 FEATURED
               </span>
             )}
           </div>
         </div>
 
-        {/* Category & City Strip */}
-        <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-[11px] font-mono text-white/90">
-          <span className="px-2 py-0.5 bg-black/70 border border-white/10 uppercase tracking-widest text-[#C8FF16]">
+        {/* Category & city chips */}
+        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-widest">
+          <span className="border border-border bg-background/90 px-2 py-1 font-bold text-accent transition-colors group-hover:border-black/40 group-hover:bg-black/80">
             {event.category.replace('_', ' ')}
           </span>
-          <span className="flex items-center gap-1 bg-black/70 px-2 py-0.5 border border-white/10 uppercase font-bold text-white">
-            <MapPin className="w-3 h-3 text-[#C8FF16]" />
+          <span className="flex items-center gap-1 border border-border bg-background/90 px-2 py-1 font-bold text-foreground transition-colors group-hover:border-black/40 group-hover:bg-black/80 group-hover:text-black">
+            <MapPin className="h-3 w-3" aria-hidden="true" />
             {event.city}
           </span>
         </div>
 
-        {/* Quick View & Share Float on Hover */}
-        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 p-4">
+        {/* Quick view / share overlay */}
+        <div className="absolute inset-0 flex items-center justify-center gap-3 bg-black/70 p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
           <button
             onClick={handleQuickViewClick}
-            className="px-3 py-2 bg-white hover:bg-[#C8FF16] text-black font-mono font-bold text-xs uppercase flex items-center gap-1.5 shadow-xl transition-colors"
+            className="flex h-11 items-center gap-1.5 bg-foreground px-4 font-mono text-xs font-bold uppercase tracking-wider text-accent-foreground transition-colors hover:bg-accent"
           >
-            <Eye className="w-3.5 h-3.5" />
-            <span>Quick View</span>
+            <Eye className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>Quick view</span>
           </button>
           <button
             onClick={handleShare}
-            className="p-2 bg-black/80 hover:bg-white/20 border border-white/30 text-white transition-colors"
+            className="flex h-11 w-11 items-center justify-center border-2 border-foreground/40 text-foreground transition-colors hover:border-foreground hover:bg-foreground hover:text-accent-foreground"
             title="Share event link"
+            aria-label={`Share ${event.title}`}
           >
-            <Share2 className="w-4 h-4" />
+            <Share2 className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
       </div>
 
-      {/* Card Content */}
-      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between font-mono">
+      {/* Body */}
+      <div className="flex flex-1 flex-col justify-between p-6">
         <div>
-          {/* Date & Time */}
-          <div className="flex items-center justify-between text-[11px] text-white/60 mb-2 pb-2 border-b border-white/10">
-            <span className="flex items-center gap-1.5 text-white/90 font-bold">
-              <Calendar className="w-3.5 h-3.5 text-[#C8FF16]" />
-              {formattedDate}
+          {/* Massive date lockup — number as graphic */}
+          <div className="mb-4 flex items-end gap-3 border-b-2 border-border pb-4 transition-colors group-hover:border-black/30">
+            <span className="text-5xl font-bold leading-[0.8] tracking-tighter text-foreground transition-colors group-hover:text-black md:text-6xl">
+              {dayNum}
             </span>
-            <span className="flex items-center gap-1 text-white/60">
-              <Clock className="w-3 h-3" />
-              {formattedTime}
-            </span>
+            <div className="pb-1 font-mono text-xs uppercase leading-tight tracking-widest text-muted-foreground transition-colors group-hover:text-black/70">
+              <div className="font-bold">{monthStr} {yearStr}</div>
+              <div className="flex items-center gap-1">
+                <Clock className="h-3 w-3" aria-hidden="true" />
+                {formattedTime}
+              </div>
+            </div>
           </div>
 
-          {/* Title */}
-          <Link href={`/events/${event.slug}`} className="block group-hover:text-[#C8FF16] transition-colors">
-            <h3 className="text-base sm:text-lg font-black uppercase tracking-tight text-white line-clamp-1 leading-snug">
+          <Link href={`/events/${event.slug}`} className="block">
+            <h3 className="line-clamp-2 text-xl font-bold uppercase leading-[0.9] tracking-tighter text-foreground transition-colors group-hover:text-black md:text-2xl lg:text-3xl">
               {event.title}
             </h3>
           </Link>
 
-          {/* Venue & Organizer */}
-          <p className="text-xs text-white/60 line-clamp-1 mt-1 font-sans">
+          <p className="mt-2 line-clamp-1 text-sm text-muted-foreground transition-colors group-hover:text-black/70">
             {event.venueName}
           </p>
 
-          <div className="flex items-center gap-1.5 mt-2.5 text-[11px] text-white/50">
-            <span className="truncate">BY {event.organizerName.toUpperCase()}</span>
+          <div className="mt-3 flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-muted-foreground transition-colors group-hover:text-black/70">
+            <span className="truncate">BY {event.organizerName}</span>
             {event.isVerifiedOrganizer && (
               <span title="Verified Organizer">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#C8FF16] shrink-0" />
+                <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-accent transition-colors group-hover:text-black" aria-hidden="true" />
               </span>
             )}
           </div>
         </div>
 
-        {/* Pricing & CTA Footer */}
-        <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between gap-2">
+        {/* Price + actions */}
+        <div className="mt-6 flex items-end justify-between gap-3 pt-4">
           <div>
-            <div className="text-[9px] uppercase tracking-widest text-white/40">ENTRY FROM</div>
-            <div className="text-base font-black text-[#C8FF16]">
+            <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground transition-colors group-hover:text-black/60">
+              ENTRY FROM
+            </div>
+            <div className="text-2xl font-bold tracking-tighter text-accent transition-colors group-hover:text-black md:text-3xl">
               ₹{event.minPrice.toLocaleString('en-IN')}
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <button
               onClick={handleSave}
-              className={`p-2 border transition-colors ${
+              className={`flex h-12 w-12 items-center justify-center border-2 transition-colors ${
                 saved
-                  ? 'border-[#C8FF16] bg-[#C8FF16] text-black'
-                  : 'border-white/10 bg-[#141612] text-white/60 hover:text-white hover:border-white/40'
+                  ? 'border-accent bg-accent text-accent-foreground group-hover:border-black group-hover:bg-black group-hover:text-accent'
+                  : 'border-border text-muted-foreground hover:border-foreground hover:text-foreground group-hover:border-black/40 group-hover:text-black'
               }`}
               title={saved ? 'Saved in Passes' : 'Save Event'}
+              aria-label={saved ? `Remove ${event.title} from saved` : `Save ${event.title}`}
+              aria-pressed={saved}
             >
-              <Bookmark className="w-4 h-4" />
+              <Bookmark className="h-4 w-4" aria-hidden="true" />
             </button>
 
             <Link
               href={`/events/${event.slug}`}
-              className="px-3.5 py-2 bg-[#C8FF16] hover:bg-[#b8ea14] text-black font-black uppercase text-xs flex items-center gap-1 transition-transform active:scale-95"
+              className="flex h-12 items-center gap-1 bg-accent px-5 text-xs font-bold uppercase tracking-tighter text-accent-foreground transition-colors group-hover:bg-black group-hover:text-accent"
             >
               <span>GET PASS</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
             </Link>
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

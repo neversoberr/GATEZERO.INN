@@ -110,7 +110,7 @@ export interface Event {
   isTrending?: boolean;
   isSellingFast?: boolean;
   isVerifiedOrganizer?: boolean;
-  accentColor: string; // Hex e.g. "#C8FF16", "#FF6B00", "#7C46FF"
+  accentColor: string; // Hex e.g. "#D4F00D", "#FF314A", "#D4F00D"
   
   // Imagery
   posterUrl: string;

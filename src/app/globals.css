@@ -1,100 +1,165 @@
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    --bg-main: #050505;
-    --bg-card: #0e0f0c;
-    --bg-panel: #141612;
-    --border-subtle: rgba(255, 255, 255, 0.08);
-    --border-lime: rgba(200, 255, 22, 0.3);
-    --signal-lime: #C8FF16;
-    --titanium: #A7AAA0;
-    --off-white: #F1F1EB;
+/* ============================================================
+   GATEZERO — KINETIC TYPOGRAPHY DESIGN SYSTEM
+   Single source of truth for all design tokens.
+   Never hardcode hex values in components — extend here.
+   ============================================================ */
+
+@theme {
+  /* --- Color architecture ------------------------------------ */
+  --color-background: #09090b;        /* rich black — never pure #000 */
+  --color-foreground: #fafafa;        /* off-white — never pure #fff */
+  --color-card: #101013;              /* raised surface (panels, tiles) */
+  --color-muted: #27272a;             /* inactive surfaces, bg numbers */
+  --color-muted-foreground: #a1a1aa;  /* secondary text — zinc, never gray */
+  --color-border: #3f3f46;            /* structural zinc lines */
+
+  /* Acid lime: midpoint of signal-lime #C8FF16 (green undertone)
+     and acid yellow #DFE104 (brand's kinetic spec). */
+  --color-accent: #d4f00d;
+  --color-accent-hover: #bbde06;      /* pressed-state darkening for accent fills */
+  --color-accent-foreground: #000000; /* text on accent — pure black */
+
+  --color-danger: #ff314a;            /* destructive / refund / logout */
+
+  /* --- Typography -------------------------------------------- */
+  /* Voiced by next/font variables set on <html> in layout.tsx */
+  --font-sans: var(--font-space-grotesk), "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* --- Motion ------------------------------------------------- */
+  --animate-scanline: scanline 2.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-pulse-slow: pulse-slow 3s ease-in-out infinite;
+
+  @keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(1000%); }
   }
-  
-  * {
-    border-color: rgba(255, 255, 255, 0.08);
+  @keyframes pulse-slow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+}
+
+@layer base {
+  *, ::before, ::after {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 
   body {
-    background-color: #050505;
-    color: #F1F1EB;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
     overflow-x: hidden;
   }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-accent-foreground);
+  }
+
+  /* Visible, obvious focus — never removed */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Custom scrollbars */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--color-background); }
+  ::-webkit-scrollbar-thumb { background: var(--color-muted); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
 }
 
-/* Custom Typography & Brutalist Aesthetics */
-.font-mono-code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  letter-spacing: -0.02em;
+/* ============================================================
+   Texture & print-poster utilities
+   ============================================================ */
+
+/* SVG turbulence noise — applied once as a fixed overlay in layout.tsx */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Ctitle%3EGrain noise texture%3C/title%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-.text-stroke-lime {
-  -webkit-text-stroke: 1px #C8FF16;
-  color: transparent;
-}
-
-.text-stroke-white {
-  -webkit-text-stroke: 1px rgba(241, 241, 235, 0.25);
-  color: transparent;
-}
-
+/* Industrial grid backdrop — barely-there structural lines */
 .bg-grid-pattern {
   background-size: 40px 40px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-image:
+    linear-gradient(to right, rgba(250, 250, 250, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(250, 250, 250, 0.04) 1px, transparent 1px);
 }
 
 .bg-dot-pattern {
   background-size: 24px 24px;
-  background-image: radial-gradient(rgba(200, 255, 22, 0.15) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(212, 240, 13, 0.16) 1px, transparent 1px);
 }
 
-.glow-lime {
-  box-shadow: 0 0 25px rgba(200, 255, 22, 0.18);
+/* Outlined display type — decorative, always aria-hidden */
+.text-stroke-accent {
+  -webkit-text-stroke: 2px var(--color-accent);
+  color: transparent;
+}
+.text-stroke-foreground {
+  -webkit-text-stroke: 1px rgba(250, 250, 250, 0.25);
+  color: transparent;
 }
 
-.glow-lime-sm {
-  box-shadow: 0 0 12px rgba(200, 255, 22, 0.25);
+/* Monospace technical voice — event codes, coordinates, labels */
+.font-mono-code {
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
 }
 
-.glow-red {
-  box-shadow: 0 0 25px rgba(255, 49, 74, 0.3);
+/* ============================================================
+   Kinetic marquee — pure CSS loop (see components/motion/Marquee)
+   Track = two identical halves; animating -50% is a seamless loop.
+   ============================================================ */
+.marquee-window {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee-scroll var(--marquee-duration, 40s) linear infinite;
+}
+.marquee-half {
+  display: flex;
+  flex: none;
+}
+.marquee-set {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+  .marquee-half[data-marquee-copy='clone'] { display: none; }
+  .marquee-set[aria-hidden='true'] { display: none; }
 }
 
-/* Custom Scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #080907;
-}
-::-webkit-scrollbar-thumb {
-  background: #232620;
-  border-radius: 0px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #C8FF16;
-}
-
-/* Industrial Scanner Animation */
-@keyframes scanline {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(1000%); }
-}
-
-.animate-scanline {
-  animation: scanline 2.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse-slow {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.animate-pulse-slow {
-  animation: pulse-slow 3s ease-in-out infinite;
+/* ============================================================
+   Reduced motion — marquees handled in <Marquee/>, CSS motion here
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .animate-scanline,
+  .animate-pulse-slow,
+  .animate-ping { animation: none !important; }
 }

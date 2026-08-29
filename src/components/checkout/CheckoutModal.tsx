@@ -249,8 +249,8 @@ export function CheckoutModal({
             width: 320,
             margin: 1,
             color: {
-              dark: '#050505',
-              light: '#C8FF16'
+              dark: '#09090B',
+              light: '#D4F00D'
             }
           });
           qrCodes.push(url);
@@ -273,7 +273,7 @@ export function CheckoutModal({
           particleCount: 80,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ['#C8FF16', '#FFFFFF', '#7C46FF', '#FF6B00']
+          colors: ['#D4F00D', '#FFFFFF', '#D4F00D', '#FF314A']
         });
       } catch (e) {}
 
@@ -284,20 +284,20 @@ export function CheckoutModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/90 backdrop-blur-lg animate-in fade-in">
       <div 
-        className="relative w-full max-w-2xl bg-[#F1F1EB] text-[#050505] shadow-2xl overflow-hidden font-mono max-h-[95vh] flex flex-col"
+        className="relative w-full max-w-2xl bg-foreground text-background overflow-hidden font-mono max-h-[95vh] flex flex-col"
         style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%)' }}
       >
         
         {/* Top brutalist bar */}
-        <div className="bg-black text-white px-6 py-3.5 flex items-center justify-between shrink-0">
+        <div className="bg-black text-foreground px-6 py-3.5 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 bg-[#C8FF16]" />
-            <span className="font-bold text-xs uppercase tracking-widest text-[#C8FF16]">
+            <div className="w-2.5 h-2.5 bg-accent" />
+            <span className="font-bold text-xs uppercase tracking-widest text-accent">
               GATE ZERO // SECURE CHECKOUT PROTOCOL
             </span>
           </div>
           {step !== 'processing' && (
-            <button onClick={onClose} className="text-white/60 hover:text-white p-1">
+            <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-1">
               <X className="w-5 h-5" />
             </button>
           )}
@@ -330,7 +330,7 @@ export function CheckoutModal({
                 </div>
 
                 {attendees.map((att, idx) => (
-                  <div key={idx} className="p-4 bg-white border border-black/20 space-y-3">
+                  <div key={idx} className="p-4 bg-foreground border border-black/20 space-y-3">
                     <div className="flex justify-between items-center text-[11px] font-bold pb-2 border-b border-black/10">
                       <span className="text-black">PASS #{idx + 1} — {att.tierName.toUpperCase()}</span>
                       <span className="text-black/60">₹{att.price.toLocaleString('en-IN')}</span>
@@ -350,7 +350,7 @@ export function CheckoutModal({
                             setAttendees(copy);
                           }}
                           placeholder="e.g. Alex Chen"
-                          className="w-full bg-[#f8f8f6] border border-black/30 px-3 py-2 text-xs font-bold focus:outline-none focus:border-black"
+                          className="w-full bg-foreground border border-black/30 px-3 py-2 text-xs font-bold focus:outline-none focus:border-black"
                           required
                         />
                       </div>
@@ -368,7 +368,7 @@ export function CheckoutModal({
                             setAttendees(copy);
                           }}
                           placeholder="alex@gatezero.in"
-                          className="w-full bg-[#f8f8f6] border border-black/30 px-3 py-2 text-xs font-bold focus:outline-none focus:border-black"
+                          className="w-full bg-foreground border border-black/30 px-3 py-2 text-xs font-bold focus:outline-none focus:border-black"
                           required
                         />
                       </div>
@@ -387,7 +387,7 @@ export function CheckoutModal({
                           setAttendees(copy);
                         }}
                         placeholder="+91 98201 44520"
-                        className="w-full bg-[#f8f8f6] border border-black/30 px-3 py-2 text-xs font-bold focus:outline-none focus:border-black"
+                        className="w-full bg-foreground border border-black/30 px-3 py-2 text-xs font-bold focus:outline-none focus:border-black"
                       />
                     </div>
                   </div>
@@ -395,7 +395,7 @@ export function CheckoutModal({
               </div>
 
               {/* Custom Organizer Questions */}
-              <div className="p-4 bg-white border border-black/20 space-y-3">
+              <div className="p-4 bg-foreground border border-black/20 space-y-3">
                 <div className="text-[11px] font-black uppercase text-black">
                   ORGANIZER COMPLIANCE QUESTIONS
                 </div>
@@ -407,7 +407,7 @@ export function CheckoutModal({
                     type="text"
                     value={customAnswers.emergencyContact || ''}
                     onChange={e => setCustomAnswers({ ...customAnswers, emergencyContact: e.target.value })}
-                    className="w-full bg-[#f8f8f6] border border-black/30 px-3 py-2 text-xs font-bold"
+                    className="w-full bg-foreground border border-black/30 px-3 py-2 text-xs font-bold"
                     required
                   />
                 </div>
@@ -424,7 +424,7 @@ export function CheckoutModal({
               </div>
 
               {/* Promo Code section */}
-              <div className="p-4 bg-white border border-black/20 space-y-2">
+              <div className="p-4 bg-foreground border border-black/20 space-y-2">
                 <div className="text-[10px] uppercase font-bold text-black/60">
                   HAVE AN ACCESS PROMO CODE?
                 </div>
@@ -434,12 +434,12 @@ export function CheckoutModal({
                     placeholder="ENTER CODE (e.g. GATEZERO10)"
                     value={promoInput}
                     onChange={e => setPromoInput(e.target.value)}
-                    className="flex-1 bg-[#f8f8f6] border border-black/30 px-3 py-2 text-xs font-bold uppercase focus:outline-none focus:border-black"
+                    className="flex-1 bg-foreground border border-black/30 px-3 py-2 text-xs font-bold uppercase focus:outline-none focus:border-black"
                   />
                   <button
                     type="button"
                     onClick={handleApplyPromo}
-                    className="px-4 py-2 bg-black text-white hover:bg-black/80 font-bold uppercase text-xs"
+                    className="px-4 py-2 bg-black text-foreground hover:bg-black/80 font-bold uppercase text-xs"
                   >
                     APPLY
                   </button>
@@ -460,10 +460,10 @@ export function CheckoutModal({
               {/* Action */}
               <button
                 type="submit"
-                className="w-full py-4 bg-black hover:bg-neutral-900 text-[#C8FF16] font-black uppercase tracking-wider text-sm flex items-center justify-center gap-2 transition-transform active:scale-[0.99]"
+                className="w-full py-4 bg-black hover:bg-neutral-900 text-accent font-black uppercase tracking-wider text-sm flex items-center justify-center gap-2 transition-transform active:scale-[0.99]"
               >
                 <span>CONTINUE TO PAYMENT (₹{finalTotal.toLocaleString('en-IN')})</span>
-                <ArrowRight className="w-4 h-4 text-[#C8FF16]" />
+                <ArrowRight className="w-4 h-4 text-accent" />
               </button>
             </form>
           )}
@@ -496,8 +496,8 @@ export function CheckoutModal({
                     onClick={() => setPaymentMethod('UPI')}
                     className={`p-3 border text-center transition-all ${
                       paymentMethod === 'UPI'
-                        ? 'border-black bg-black text-[#C8FF16] font-black'
-                        : 'border-black/20 bg-white text-black hover:border-black'
+                        ? 'border-black bg-black text-accent font-black'
+                        : 'border-black/20 bg-foreground text-black hover:border-black'
                     }`}
                   >
                     <Smartphone className="w-4 h-4 mx-auto mb-1" />
@@ -509,8 +509,8 @@ export function CheckoutModal({
                     onClick={() => setPaymentMethod('Card')}
                     className={`p-3 border text-center transition-all ${
                       paymentMethod === 'Card'
-                        ? 'border-black bg-black text-[#C8FF16] font-black'
-                        : 'border-black/20 bg-white text-black hover:border-black'
+                        ? 'border-black bg-black text-accent font-black'
+                        : 'border-black/20 bg-foreground text-black hover:border-black'
                     }`}
                   >
                     <CreditCard className="w-4 h-4 mx-auto mb-1" />
@@ -522,8 +522,8 @@ export function CheckoutModal({
                     onClick={() => setPaymentMethod('NetBanking')}
                     className={`p-3 border text-center transition-all ${
                       paymentMethod === 'NetBanking'
-                        ? 'border-black bg-black text-[#C8FF16] font-black'
-                        : 'border-black/20 bg-white text-black hover:border-black'
+                        ? 'border-black bg-black text-accent font-black'
+                        : 'border-black/20 bg-foreground text-black hover:border-black'
                     }`}
                   >
                     <Building className="w-4 h-4 mx-auto mb-1" />
@@ -535,8 +535,8 @@ export function CheckoutModal({
                     onClick={() => setPaymentMethod('Razorpay')}
                     className={`p-3 border text-center transition-all ${
                       paymentMethod === 'Razorpay'
-                        ? 'border-black bg-black text-[#C8FF16] font-black'
-                        : 'border-black/20 bg-white text-black hover:border-black'
+                        ? 'border-black bg-black text-accent font-black'
+                        : 'border-black/20 bg-foreground text-black hover:border-black'
                     }`}
                   >
                     <ShieldCheck className="w-4 h-4 mx-auto mb-1" />
@@ -546,7 +546,7 @@ export function CheckoutModal({
 
                 {/* UPI Sub-form */}
                 {paymentMethod === 'UPI' && (
-                  <div className="p-4 bg-white border border-black/20 space-y-3">
+                  <div className="p-4 bg-foreground border border-black/20 space-y-3">
                     <div className="text-xs font-bold uppercase text-black">
                       INSTANT UPI VPA ID
                     </div>
@@ -555,7 +555,7 @@ export function CheckoutModal({
                       value={upiId}
                       onChange={e => setUpiId(e.target.value)}
                       placeholder="mobile@upi or user@okhdfcbank"
-                      className="w-full bg-[#f8f8f6] border border-black/30 px-3 py-2 text-xs font-bold"
+                      className="w-full bg-foreground border border-black/30 px-3 py-2 text-xs font-bold"
                     />
                     <p className="text-[10px] text-black/50">
                       Supports Google Pay, PhonePe, Paytm, CRED & BHIM. Instant authorization.
@@ -565,7 +565,7 @@ export function CheckoutModal({
 
                 {/* Card Sub-form */}
                 {paymentMethod === 'Card' && (
-                  <div className="p-4 bg-white border border-black/20 space-y-3">
+                  <div className="p-4 bg-foreground border border-black/20 space-y-3">
                     <div>
                       <label className="block text-[10px] uppercase font-bold text-black/70 mb-1">
                         CARD NUMBER (TEST SANDBOX)
@@ -574,7 +574,7 @@ export function CheckoutModal({
                         type="text"
                         value={cardNumber}
                         onChange={e => setCardNumber(e.target.value)}
-                        className="w-full bg-[#f8f8f6] border border-black/30 px-3 py-2 text-xs font-bold"
+                        className="w-full bg-foreground border border-black/30 px-3 py-2 text-xs font-bold"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
@@ -586,7 +586,7 @@ export function CheckoutModal({
                           type="text"
                           value={cardExpiry}
                           onChange={e => setCardExpiry(e.target.value)}
-                          className="w-full bg-[#f8f8f6] border border-black/30 px-3 py-2 text-xs font-bold"
+                          className="w-full bg-foreground border border-black/30 px-3 py-2 text-xs font-bold"
                         />
                       </div>
                       <div>
@@ -597,7 +597,7 @@ export function CheckoutModal({
                           type="password"
                           value={cardCvv}
                           onChange={e => setCardCvv(e.target.value)}
-                          className="w-full bg-[#f8f8f6] border border-black/30 px-3 py-2 text-xs font-bold"
+                          className="w-full bg-foreground border border-black/30 px-3 py-2 text-xs font-bold"
                         />
                       </div>
                     </div>
@@ -606,14 +606,14 @@ export function CheckoutModal({
 
                 {/* NetBanking Sub-form */}
                 {paymentMethod === 'NetBanking' && (
-                  <div className="p-4 bg-white border border-black/20 space-y-2">
+                  <div className="p-4 bg-foreground border border-black/20 space-y-2">
                     <label className="block text-[10px] uppercase font-bold text-black/70">
                       CHOOSE INDIAN BANK
                     </label>
                     <select
                       value={selectedBank}
                       onChange={e => setSelectedBank(e.target.value)}
-                      className="w-full bg-[#f8f8f6] border border-black/30 px-3 py-2 text-xs font-bold uppercase"
+                      className="w-full bg-foreground border border-black/30 px-3 py-2 text-xs font-bold uppercase"
                     >
                       <option>HDFC Bank</option>
                       <option>ICICI Bank</option>
@@ -626,7 +626,7 @@ export function CheckoutModal({
               </div>
 
               {/* Order Breakdown */}
-              <div className="p-4 bg-white border border-black/20 space-y-2 text-xs">
+              <div className="p-4 bg-foreground border border-black/20 space-y-2 text-xs">
                 <div className="flex justify-between font-bold">
                   <span>PASSES SUBTOTAL ({attendees.length}):</span>
                   <span>₹{subtotal.toLocaleString('en-IN')}</span>
@@ -671,9 +671,9 @@ export function CheckoutModal({
                 type="button"
                 onClick={handleExecutePayment}
                 disabled={!termsAccepted}
-                className="w-full py-4 bg-black hover:bg-neutral-900 text-[#C8FF16] font-black uppercase tracking-wider text-sm flex items-center justify-center gap-2 transition-transform active:scale-[0.99] disabled:opacity-40"
+                className="w-full py-4 bg-black hover:bg-neutral-900 text-accent font-black uppercase tracking-wider text-sm flex items-center justify-center gap-2 transition-transform active:scale-[0.99] disabled:opacity-40"
               >
-                <Lock className="w-4 h-4 text-[#C8FF16]" />
+                <Lock className="w-4 h-4 text-accent" />
                 <span>AUTHORIZE PAYMENT (₹{finalTotal.toLocaleString('en-IN')})</span>
               </button>
             </div>
@@ -682,7 +682,7 @@ export function CheckoutModal({
           {/* STEP 3: PROCESSING */}
           {step === 'processing' && (
             <div className="py-16 text-center space-y-4">
-              <div className="w-16 h-16 border-4 border-black border-t-[#C8FF16] rounded-full animate-spin mx-auto" />
+              <div className="w-16 h-16 border-4 border-black border-t-accent rounded-full animate-spin mx-auto" />
               <div className="text-sm font-black uppercase tracking-widest text-black">
                 ENCRYPTING PASS KEYS...
               </div>
@@ -697,14 +697,14 @@ export function CheckoutModal({
             <div className="space-y-6 animate-in zoom-in-95 duration-300">
               
               {/* Giant Access Header */}
-              <div className="bg-black text-[#C8FF16] p-6 text-center space-y-1">
-                <div className="text-xs uppercase tracking-widest font-mono text-white/60">
+              <div className="bg-black text-accent p-6 text-center space-y-1">
+                <div className="text-xs uppercase tracking-widest font-mono text-muted-foreground">
                   ACCESS STATUS // CONFIRMED
                 </div>
                 <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tighter">
                   YOU’RE THROUGH.
                 </h2>
-                <div className="text-xs font-mono text-white/80 pt-1">
+                <div className="text-xs font-mono text-foreground/80 pt-1">
                   ORDER: {completedOrder.orderNumber}
                 </div>
               </div>
@@ -714,7 +714,7 @@ export function CheckoutModal({
                 {completedOrder.attendees.map((att, idx) => (
                   <div
                     key={att.id}
-                    className="p-5 bg-white border-2 border-black flex flex-col sm:flex-row items-center justify-between gap-4"
+                    className="p-5 bg-foreground border-2 border-black flex flex-col sm:flex-row items-center justify-between gap-4"
                   >
                     <div className="space-y-1 text-left w-full sm:w-auto">
                       <div className="text-[10px] uppercase tracking-widest text-black/50 font-bold">
@@ -750,9 +750,9 @@ export function CheckoutModal({
                 <Link
                   href="/tickets"
                   onClick={onClose}
-                  className="py-3 bg-black hover:bg-neutral-800 text-white font-black uppercase text-xs text-center flex items-center justify-center gap-2"
+                  className="py-3 bg-black hover:bg-neutral-800 text-foreground font-black uppercase text-xs text-center flex items-center justify-center gap-2"
                 >
-                  <QrIcon className="w-4 h-4 text-[#C8FF16]" />
+                  <QrIcon className="w-4 h-4 text-accent" />
                   <span>VIEW IN MY PASS WALLET</span>
                 </Link>
 
@@ -761,7 +761,7 @@ export function CheckoutModal({
                   onClick={() => {
                     toast.success('PASS DOWNLOADED', 'Digital passcard saved to your device.');
                   }}
-                  className="py-3 bg-[#f0f0ea] hover:bg-white border-2 border-black text-black font-black uppercase text-xs flex items-center justify-center gap-2"
+                  className="py-3 bg-foreground hover:bg-foreground border-2 border-black text-black font-black uppercase text-xs flex items-center justify-center gap-2"
                 >
                   <Download className="w-4 h-4" />
                   <span>DOWNLOAD PASS (PDF)</span>

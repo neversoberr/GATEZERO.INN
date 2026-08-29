@@ -4,23 +4,28 @@ import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { UserRole } from '@/types';
 import Link from 'next/link';
-import { 
-  Users, 
-  Building2, 
-  Share2, 
-  ScanLine, 
-  ShieldAlert, 
-  ChevronDown, 
-  ChevronUp, 
-  Ticket, 
-  ExternalLink 
+import {
+  Users,
+  Building2,
+  Share2,
+  ScanLine,
+  ShieldAlert,
+  ChevronDown,
+  ChevronUp,
+  Ticket,
 } from 'lucide-react';
 
 export function RoleBanner() {
   const { user, role, switchRole } = useAuth();
   const [isExpanded, setIsExpanded] = useState(true);
 
-  const rolesList: { role: UserRole; label: string; name: string; url: string; icon: any }[] = [
+  const rolesList: {
+    role: UserRole;
+    label: string;
+    name: string;
+    url: string;
+    icon: React.ComponentType<{ className?: string }>;
+  }[] = [
     { role: 'customer', label: 'Attendee', name: 'Alex Chen', url: '/tickets', icon: Ticket },
     { role: 'organizer', label: 'Organizer', name: 'SubKulture (Karan)', url: '/organizer/dashboard', icon: Building2 },
     { role: 'promoter', label: 'Promoter', name: 'Priya Sharma', url: '/promoter', icon: Share2 },
@@ -29,22 +34,21 @@ export function RoleBanner() {
   ];
 
   return (
-    <div className="bg-[#0c0e0a] border-b border-[#C8FF16]/20 text-[#F1F1EB] text-xs font-mono relative z-40">
-      <div className="max-w-7xl mx-auto px-4 py-1.5 flex flex-wrap items-center justify-between gap-2">
-        {/* Left: Active Role status */}
-        <div className="flex items-center gap-2">
-          <span className="inline-block w-2 h-2 rounded-full bg-[#C8FF16] animate-ping" />
-          <span className="text-white/60 uppercase tracking-widest text-[10px]">ROLE PREVIEW:</span>
-          <span className="px-2 py-0.5 bg-[#C8FF16] text-black font-bold uppercase tracking-wider text-[11px]">
+    /* Full-bleed acid strip — loud by design: this is a demo control, not chrome */
+    <div className="relative z-40 bg-accent font-mono text-accent-foreground">
+      <div className="mx-auto flex w-full max-w-[95vw] flex-wrap items-center justify-between gap-2 px-4 py-1.5 md:px-8">
+        {/* Active role */}
+        <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest">
+          <span className="font-bold text-black/60">ROLE PREVIEW:</span>
+          <span className="bg-black px-2 py-0.5 font-bold text-accent">
             {role.replace('_', ' ')}
           </span>
-          <span className="text-white/40 hidden sm:inline">|</span>
-          <span className="text-white/70 hidden sm:inline truncate max-w-[180px]">
+          <span className="hidden max-w-[180px] truncate text-black/70 sm:inline">
             {user?.name || 'Guest'}
           </span>
         </div>
 
-        {/* Center: Switch buttons */}
+        {/* Switcher */}
         <div className="flex items-center gap-1 overflow-x-auto py-1">
           {rolesList.map(item => {
             const Icon = item.icon;
@@ -53,20 +57,21 @@ export function RoleBanner() {
               <div key={item.role} className="flex items-center">
                 <button
                   onClick={() => switchRole(item.role)}
-                  className={`px-2 py-1 text-[11px] uppercase tracking-wider flex items-center gap-1.5 transition-all ${
+                  className={`flex items-center gap-1.5 border-2 px-2 py-1 text-[11px] uppercase tracking-wider transition-colors ${
                     isActive
-                      ? 'bg-white text-black font-bold border border-white'
-                      : 'bg-black/40 text-white/70 hover:text-white hover:bg-white/10 border border-white/10'
+                      ? 'border-black bg-black font-bold text-accent'
+                      : 'border-black/20 text-black/70 hover:border-black hover:text-black'
                   }`}
                   title={`Switch to ${item.label} (${item.name})`}
+                  aria-pressed={isActive}
                 >
-                  <Icon className="w-3 h-3" />
+                  <Icon className="h-3 w-3" aria-hidden="true" />
                   <span>{item.label}</span>
                 </button>
                 {isActive && (
                   <Link
                     href={item.url}
-                    className="ml-1 px-1.5 py-1 bg-[#C8FF16]/20 hover:bg-[#C8FF16] text-[#C8FF16] hover:text-black border border-[#C8FF16]/40 text-[10px] uppercase font-bold flex items-center gap-0.5 transition-colors"
+                    className="ml-1 border-2 border-black bg-black px-1.5 py-1 text-[10px] font-bold uppercase text-accent transition-colors hover:opacity-80"
                   >
                     GO ↗
                   </Link>
@@ -76,10 +81,14 @@ export function RoleBanner() {
           })}
         </div>
 
-        {/* Right: Quick direct dashboard link */}
-        <div className="hidden lg:flex items-center gap-3 text-[11px] text-white/50">
-          <span>ALL HUBS ACTIVE & MOCKED</span>
-        </div>
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="hidden items-center gap-1 text-[11px] uppercase tracking-widest text-black/60 transition-colors hover:text-black lg:flex"
+          aria-label={isExpanded ? 'Collapse banner' : 'Expand banner'}
+        >
+          ALL HUBS ACTIVE &amp; MOCKED
+          {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+        </button>
       </div>
     </div>
   );

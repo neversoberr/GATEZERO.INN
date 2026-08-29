@@ -249,7 +249,7 @@ Doors open at 21:00 IST. Strict entry cutoff at 00:30. Water stations, chillout 
     isTrending: true,
     isSellingFast: true,
     isVerifiedOrganizer: true,
-    accentColor: '#C8FF16',
+    accentColor: '#D4F00D',
     
     posterUrl: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=800&auto=format&fit=crop',
     coverBannerUrl: 'https://images.unsplash.com/photo-1574391884720-bbc3740c59d1?q=80&w=1600&auto=format&fit=crop',
@@ -344,7 +344,7 @@ Experience the visceral physical weight of deep sub-bass frequencies and etherea
     isTrending: true,
     isSellingFast: false,
     isVerifiedOrganizer: true,
-    accentColor: '#7C46FF',
+    accentColor: '#D4F00D',
     
     posterUrl: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=800&auto=format&fit=crop',
     coverBannerUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1600&auto=format&fit=crop',
@@ -416,7 +416,7 @@ Full eco-conscious infrastructure, artisan food markets, wellness programming, a
     isTrending: true,
     isSellingFast: true,
     isVerifiedOrganizer: true,
-    accentColor: '#FF6B00',
+    accentColor: '#FF314A',
     
     posterUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=800&auto=format&fit=crop',
     coverBannerUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1600&auto=format&fit=crop',
@@ -487,7 +487,7 @@ Held inside an open-air concrete courtyard at Dhan Mill Compound. Featuring cust
     isTrending: false,
     isSellingFast: true,
     isVerifiedOrganizer: true,
-    accentColor: '#C8FF16',
+    accentColor: '#D4F00D',
     
     posterUrl: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?q=80&w=800&auto=format&fit=crop',
     coverBannerUrl: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?q=80&w=1600&auto=format&fit=crop',
@@ -616,7 +616,7 @@ Held inside an open-air concrete courtyard at Dhan Mill Compound. Featuring cust
     isTrending: false,
     isSellingFast: true,
     isVerifiedOrganizer: true,
-    accentColor: '#C8FF16',
+    accentColor: '#D4F00D',
     
     posterUrl: 'https://images.unsplash.com/photo-1585699324551-f6c309eedeca?q=80&w=800&auto=format&fit=crop',
     coverBannerUrl: 'https://images.unsplash.com/photo-1514306191717-452ec28c7814?q=80&w=1600&auto=format&fit=crop',
@@ -683,7 +683,7 @@ Every participant receives access to an individual Eurorack demo rig supplied wi
     isTrending: false,
     isSellingFast: false,
     isVerifiedOrganizer: true,
-    accentColor: '#7C46FF',
+    accentColor: '#D4F00D',
     
     posterUrl: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=800&auto=format&fit=crop',
     coverBannerUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1600&auto=format&fit=crop',
@@ -747,7 +747,7 @@ Every participant receives access to an individual Eurorack demo rig supplied wi
     isTrending: false,
     isSellingFast: false,
     isVerifiedOrganizer: true,
-    accentColor: '#C8FF16',
+    accentColor: '#D4F00D',
     
     posterUrl: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?q=80&w=800&auto=format&fit=crop',
     coverBannerUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1600&auto=format&fit=crop',
@@ -810,7 +810,7 @@ Every participant receives access to an individual Eurorack demo rig supplied wi
     isTrending: false,
     isSellingFast: true,
     isVerifiedOrganizer: true,
-    accentColor: '#C8FF16',
+    accentColor: '#D4F00D',
     
     posterUrl: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=800&auto=format&fit=crop',
     coverBannerUrl: 'https://images.unsplash.com/photo-1574391884720-bbc3740c59d1?q=80&w=1600&auto=format&fit=crop',

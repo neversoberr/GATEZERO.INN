@@ -44,20 +44,20 @@ export function LoginModal() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
       <div 
-        className="relative w-full max-w-md bg-[#0e0f0c] border border-[#C8FF16]/40 p-6 sm:p-8 shadow-2xl text-[#F1F1EB]"
+        className="relative w-full max-w-md bg-card border border-accent/40 p-6 sm:p-8 text-foreground"
         style={{ clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%)' }}
       >
         {/* Top brutalist bar */}
-        <div className="flex items-center justify-between pb-4 mb-6 border-b border-white/10">
+        <div className="flex items-center justify-between pb-4 mb-6 border-b border-border/50">
           <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 bg-[#C8FF16] animate-pulse" />
-            <span className="font-mono text-xs uppercase tracking-widest text-[#C8FF16]">
+            <div className="w-2.5 h-2.5 bg-accent animate-pulse" />
+            <span className="font-mono text-xs uppercase tracking-widest text-accent">
               GATE ZERO // ACCESS TERMINAL
             </span>
           </div>
           <button 
             onClick={closeLoginModal}
-            className="text-white/50 hover:text-white transition-colors p-1"
+            className="text-muted-foreground hover:text-foreground transition-colors p-1"
           >
             <X className="w-5 h-5" />
           </button>
@@ -65,48 +65,48 @@ export function LoginModal() {
 
         {/* Header */}
         <div className="mb-6">
-          <h2 className="text-2xl font-black uppercase tracking-tight text-white">
+          <h2 className="text-2xl font-black uppercase tracking-tight text-foreground">
             ENTER THE GATE
           </h2>
-          <p className="text-xs text-white/60 font-mono mt-1">
+          <p className="text-xs text-muted-foreground font-mono mt-1">
             VERIFIED INDIAN MOBILE OR EMAIL CREDENTIALS
           </p>
         </div>
 
         {/* Quick Demo Switcher Tabs */}
-        <div className="mb-6 p-3 bg-black/60 border border-white/10">
-          <div className="text-[10px] font-mono uppercase tracking-widest text-white/50 mb-2 flex items-center gap-1.5">
-            <UserCheck className="w-3.5 h-3.5 text-[#C8FF16]" />
+        <div className="mb-6 p-3 bg-black/60 border border-border/50">
+          <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-2 flex items-center gap-1.5">
+            <UserCheck className="w-3.5 h-3.5 text-accent" />
             ONE-CLICK ROLE DEMO LOGIN:
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-xs font-mono">
             <button
               onClick={() => handleQuickRole('customer')}
-              className="px-2 py-1.5 bg-[#171914] hover:bg-[#C8FF16] hover:text-black border border-white/10 text-left transition-colors truncate"
+              className="px-2 py-1.5 bg-card hover:bg-accent hover:text-black border border-border/50 text-left transition-colors truncate"
             >
               • Attendee
             </button>
             <button
               onClick={() => handleQuickRole('organizer')}
-              className="px-2 py-1.5 bg-[#171914] hover:bg-[#C8FF16] hover:text-black border border-white/10 text-left transition-colors truncate"
+              className="px-2 py-1.5 bg-card hover:bg-accent hover:text-black border border-border/50 text-left transition-colors truncate"
             >
               • Organizer
             </button>
             <button
               onClick={() => handleQuickRole('promoter')}
-              className="px-2 py-1.5 bg-[#171914] hover:bg-[#C8FF16] hover:text-black border border-white/10 text-left transition-colors truncate"
+              className="px-2 py-1.5 bg-card hover:bg-accent hover:text-black border border-border/50 text-left transition-colors truncate"
             >
               • Promoter
             </button>
             <button
               onClick={() => handleQuickRole('door_staff')}
-              className="px-2 py-1.5 bg-[#171914] hover:bg-[#C8FF16] hover:text-black border border-white/10 text-left transition-colors truncate"
+              className="px-2 py-1.5 bg-card hover:bg-accent hover:text-black border border-border/50 text-left transition-colors truncate"
             >
               • Door Staff
             </button>
             <button
               onClick={() => handleQuickRole('super_admin')}
-              className="px-2 py-1.5 bg-[#171914] hover:bg-[#C8FF16] hover:text-black border border-white/10 text-left transition-colors truncate col-span-2 sm:col-span-1"
+              className="px-2 py-1.5 bg-card hover:bg-accent hover:text-black border border-border/50 text-left transition-colors truncate col-span-2 sm:col-span-1"
             >
               • Super Admin
             </button>
@@ -116,12 +116,12 @@ export function LoginModal() {
         {/* Auth form */}
         {!otpSent ? (
           <form onSubmit={handleSendOtp} className="space-y-4">
-            <div className="flex border border-white/10 bg-black/40 p-1">
+            <div className="flex border border-border/50 bg-black/40 p-1">
               <button
                 type="button"
                 onClick={() => { setAuthMethod('phone'); setInputValue(''); }}
                 className={`flex-1 py-1.5 text-xs font-mono uppercase flex items-center justify-center gap-1.5 transition-colors ${
-                  authMethod === 'phone' ? 'bg-[#C8FF16] text-black font-bold' : 'text-white/60 hover:text-white'
+                  authMethod === 'phone' ? 'bg-accent text-black font-bold' : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 <Smartphone className="w-3.5 h-3.5" /> Mobile OTP
@@ -130,7 +130,7 @@ export function LoginModal() {
                 type="button"
                 onClick={() => { setAuthMethod('email'); setInputValue(''); }}
                 className={`flex-1 py-1.5 text-xs font-mono uppercase flex items-center justify-center gap-1.5 transition-colors ${
-                  authMethod === 'email' ? 'bg-[#C8FF16] text-black font-bold' : 'text-white/60 hover:text-white'
+                  authMethod === 'email' ? 'bg-accent text-black font-bold' : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 <Mail className="w-3.5 h-3.5" /> Email
@@ -138,12 +138,12 @@ export function LoginModal() {
             </div>
 
             <div>
-              <label className="block text-[11px] font-mono uppercase tracking-wider text-white/70 mb-1.5">
+              <label className="block text-[11px] font-mono uppercase tracking-wider text-foreground/70 mb-1.5">
                 {authMethod === 'phone' ? 'INDIAN MOBILE (+91)' : 'ACCOUNT EMAIL'}
               </label>
               <div className="relative">
                 {authMethod === 'phone' && (
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-sm text-[#C8FF16]">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 font-mono text-sm text-accent">
                     +91
                   </span>
                 )}
@@ -152,7 +152,7 @@ export function LoginModal() {
                   value={inputValue}
                   onChange={e => setInputValue(e.target.value)}
                   placeholder={authMethod === 'phone' ? '98201 44520' : 'alex@gatezero.in'}
-                  className={`w-full bg-black/60 border border-white/20 px-3 py-2.5 text-white font-mono text-sm focus:border-[#C8FF16] focus:outline-none transition-colors ${
+                  className={`w-full bg-black/60 border border-border px-3 py-2.5 text-foreground font-mono text-sm focus:border-accent focus:outline-none transition-colors ${
                     authMethod === 'phone' ? 'pl-12' : ''
                   }`}
                   required
@@ -163,7 +163,7 @@ export function LoginModal() {
             <button
               type="submit"
               disabled={isLoading || !inputValue}
-              className="w-full py-3 bg-[#C8FF16] hover:bg-[#b8ea14] text-black font-black uppercase tracking-wider text-sm flex items-center justify-center gap-2 transition-transform active:scale-[0.99] disabled:opacity-50"
+              className="w-full py-3 bg-accent hover:bg-accent-hover text-black font-black uppercase tracking-wider text-sm flex items-center justify-center gap-2 transition-transform active:scale-[0.99] disabled:opacity-50"
             >
               {isLoading ? 'DISPATCHING ACCESS OTP...' : 'REQUEST ACCESS PASS ↗'}
             </button>
@@ -172,13 +172,13 @@ export function LoginModal() {
           <form onSubmit={handleVerifyOtp} className="space-y-4">
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-[11px] font-mono uppercase tracking-wider text-white/70">
+                <label className="text-[11px] font-mono uppercase tracking-wider text-foreground/70">
                   ENTER 6-DIGIT OTP CODE
                 </label>
                 <button
                   type="button"
                   onClick={() => setOtpSent(false)}
-                  className="text-[10px] font-mono text-[#C8FF16] hover:underline"
+                  className="text-[10px] font-mono text-accent hover:underline"
                 >
                   CHANGE NUMBER
                 </button>
@@ -189,11 +189,11 @@ export function LoginModal() {
                 value={otpCode}
                 onChange={e => setOtpCode(e.target.value)}
                 placeholder="6 0 2 9 1 8"
-                className="w-full bg-black/60 border border-[#C8FF16] px-3 py-3 text-center text-xl font-mono tracking-widest text-[#C8FF16] focus:outline-none"
+                className="w-full bg-black/60 border border-accent px-3 py-3 text-center text-xl font-mono tracking-widest text-accent focus:outline-none"
                 autoFocus
                 required
               />
-              <p className="text-[11px] font-mono text-white/40 mt-1.5 text-center">
+              <p className="text-[11px] font-mono text-muted-foreground mt-1.5 text-center">
                 Demo code: Enter any 6 digits (e.g. 123456)
               </p>
             </div>
@@ -201,7 +201,7 @@ export function LoginModal() {
             <button
               type="submit"
               disabled={isLoading || otpCode.length < 4}
-              className="w-full py-3 bg-[#C8FF16] hover:bg-[#b8ea14] text-black font-black uppercase tracking-wider text-sm flex items-center justify-center gap-2 transition-transform active:scale-[0.99] disabled:opacity-50"
+              className="w-full py-3 bg-accent hover:bg-accent-hover text-black font-black uppercase tracking-wider text-sm flex items-center justify-center gap-2 transition-transform active:scale-[0.99] disabled:opacity-50"
             >
               <KeyRound className="w-4 h-4" />
               {isLoading ? 'AUTHENTICATING HASH...' : 'VERIFY & ENTER GATE'}
@@ -210,9 +210,9 @@ export function LoginModal() {
         )}
 
         {/* Security badge */}
-        <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-[10px] font-mono text-white/40">
+        <div className="mt-6 pt-4 border-t border-border/50 flex items-center justify-between text-[10px] font-mono text-muted-foreground">
           <span className="flex items-center gap-1">
-            <ShieldCheck className="w-3.5 h-3.5 text-[#C8FF16]" /> 256-BIT ENCRYPTED
+            <ShieldCheck className="w-3.5 h-3.5 text-accent" /> 256-BIT ENCRYPTED
           </span>
           <span>GATE ZERO v2.6.0</span>
         </div>

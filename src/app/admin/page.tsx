@@ -133,38 +133,38 @@ function CommandCenterContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#F1F1EB] flex flex-col font-mono selection:bg-[#C8FF16] selection:text-black">
+    <div className="min-h-screen bg-background text-foreground flex flex-col font-mono selection:bg-accent selection:text-black">
       <RoleBanner />
       <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
         
         {/* Admin Header */}
-        <div className="pb-6 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="pb-6 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <ShieldAlert className="w-4 h-4 text-[#FF314A]" />
-              <span className="text-[10px] uppercase tracking-widest text-[#FF314A] font-bold">
+              <ShieldAlert className="w-4 h-4 text-danger" />
+              <span className="text-[10px] uppercase tracking-widest text-danger font-bold">
                 GATE ZERO CORE PLATFORM // CHIEF CONTROLLER
               </span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-white mt-1">
+            <h1 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-foreground mt-1">
               SYSTEM COMMAND CENTER
             </h1>
-            <p className="text-xs text-white/50 font-sans mt-0.5">
-              Superadmin: <strong className="text-white">{user?.name || 'Dev Malik'}</strong> • Multi-City Cultural Ticketing Exchange
+            <p className="text-xs text-muted-foreground font-sans mt-0.5">
+              Superadmin: <strong className="text-foreground">{user?.name || 'Dev Malik'}</strong> • Multi-City Cultural Ticketing Exchange
             </p>
           </div>
 
           <div className="flex items-center gap-2 text-xs">
-            <span className="px-3 py-1.5 bg-black border border-[#C8FF16] text-[#C8FF16] font-bold">
+            <span className="px-3 py-1.5 bg-black border border-accent text-accent font-bold">
               SYS_INTEGRITY: 100%
             </span>
           </div>
         </div>
 
         {/* Tab Selector */}
-        <div className="flex overflow-x-auto border-b border-white/10 gap-2 text-xs">
+        <div className="flex overflow-x-auto border-b border-border/50 gap-2 text-xs">
           {[
             { id: 'kpis', label: 'Platform KPIs', icon: Activity },
             { id: 'events', label: `Event Approvals (${events.length})`, icon: Calendar },
@@ -182,8 +182,8 @@ function CommandCenterContent() {
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`pb-3 px-3 uppercase font-bold flex items-center gap-2 border-b-2 whitespace-nowrap transition-colors ${
                   isActive
-                    ? 'border-[#C8FF16] text-[#C8FF16]'
-                    : 'border-transparent text-white/60 hover:text-white'
+                    ? 'border-accent text-accent'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -200,61 +200,61 @@ function CommandCenterContent() {
           {activeTab === 'kpis' && (
             <div className="space-y-8">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-6 bg-[#0e100c] border border-white/10 space-y-1">
-                  <div className="text-[10px] text-white/40 uppercase">PLATFORM GMV (ALL CITIES)</div>
-                  <div className="text-3xl font-black text-white">₹{totalGMV.toLocaleString('en-IN')}</div>
-                  <div className="text-[10px] text-[#C8FF16]">↑ 31.4% Monthly Velocity</div>
+                <div className="p-6 bg-card border border-border/50 space-y-1">
+                  <div className="text-[10px] text-muted-foreground uppercase">PLATFORM GMV (ALL CITIES)</div>
+                  <div className="text-3xl font-black text-foreground">₹{totalGMV.toLocaleString('en-IN')}</div>
+                  <div className="text-[10px] text-accent">↑ 31.4% Monthly Velocity</div>
                 </div>
 
-                <div className="p-6 bg-[#0e100c] border border-white/10 space-y-1">
-                  <div className="text-[10px] text-white/40 uppercase">GATE ZERO NET REVENUE</div>
-                  <div className="text-3xl font-black text-[#C8FF16]">₹{platformRevenue.toLocaleString('en-IN')}</div>
-                  <div className="text-[10px] text-white/60">5% Platform Fee + ₹49 pass charge</div>
+                <div className="p-6 bg-card border border-border/50 space-y-1">
+                  <div className="text-[10px] text-muted-foreground uppercase">GATE ZERO NET REVENUE</div>
+                  <div className="text-3xl font-black text-accent">₹{platformRevenue.toLocaleString('en-IN')}</div>
+                  <div className="text-[10px] text-muted-foreground">5% Platform Fee + ₹49 pass charge</div>
                 </div>
 
-                <div className="p-6 bg-[#0e100c] border border-white/10 space-y-1">
-                  <div className="text-[10px] text-white/40 uppercase">ACTIVE RADAR PRODUCTIONS</div>
-                  <div className="text-3xl font-black text-white">{events.length}</div>
-                  <div className="text-[10px] text-white/60">Mumbai, BLR, Delhi, Goa, Pune</div>
+                <div className="p-6 bg-card border border-border/50 space-y-1">
+                  <div className="text-[10px] text-muted-foreground uppercase">ACTIVE RADAR PRODUCTIONS</div>
+                  <div className="text-3xl font-black text-foreground">{events.length}</div>
+                  <div className="text-[10px] text-muted-foreground">Mumbai, BLR, Delhi, Goa, Pune</div>
                 </div>
 
-                <div className="p-6 bg-[#0e100c] border border-white/10 space-y-1">
-                  <div className="text-[10px] text-white/40 uppercase">REGISTERED ATTENDEES</div>
-                  <div className="text-3xl font-black text-white">4,820</div>
-                  <div className="text-[10px] text-white/60">0.02% Dispute Rate</div>
+                <div className="p-6 bg-card border border-border/50 space-y-1">
+                  <div className="text-[10px] text-muted-foreground uppercase">REGISTERED ATTENDEES</div>
+                  <div className="text-3xl font-black text-foreground">4,820</div>
+                  <div className="text-[10px] text-muted-foreground">0.02% Dispute Rate</div>
                 </div>
               </div>
 
               {/* City Breakdown Grid */}
-              <div className="p-6 bg-[#0e100c] border border-white/10 space-y-4">
-                <div className="text-xs font-black uppercase text-white pb-3 border-b border-white/10">
+              <div className="p-6 bg-card border border-border/50 space-y-4">
+                <div className="text-xs font-black uppercase text-foreground pb-3 border-b border-border/50">
                   METROPOLITAN MARKET SHARE (INR)
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 text-xs">
-                  <div className="p-3 bg-black/60 border border-white/10">
-                    <div className="text-[10px] text-[#C8FF16]">MUMBAI [MUM]</div>
-                    <div className="text-base font-bold text-white mt-1">₹34.8L</div>
-                    <div className="text-[9px] text-white/40">51% Volume</div>
+                  <div className="p-3 bg-black/60 border border-border/50">
+                    <div className="text-[10px] text-accent">MUMBAI [MUM]</div>
+                    <div className="text-base font-bold text-foreground mt-1">₹34.8L</div>
+                    <div className="text-[9px] text-muted-foreground">51% Volume</div>
                   </div>
-                  <div className="p-3 bg-black/60 border border-white/10">
-                    <div className="text-[10px] text-[#C8FF16]">BENGALURU [BLR]</div>
-                    <div className="text-base font-bold text-white mt-1">₹18.2L</div>
-                    <div className="text-[9px] text-white/40">26% Volume</div>
+                  <div className="p-3 bg-black/60 border border-border/50">
+                    <div className="text-[10px] text-accent">BENGALURU [BLR]</div>
+                    <div className="text-base font-bold text-foreground mt-1">₹18.2L</div>
+                    <div className="text-[9px] text-muted-foreground">26% Volume</div>
                   </div>
-                  <div className="p-3 bg-black/60 border border-white/10">
-                    <div className="text-[10px] text-[#C8FF16]">GOA [GOA]</div>
-                    <div className="text-base font-bold text-white mt-1">₹8.9L</div>
-                    <div className="text-[9px] text-white/40">13% Volume</div>
+                  <div className="p-3 bg-black/60 border border-border/50">
+                    <div className="text-[10px] text-accent">GOA [GOA]</div>
+                    <div className="text-base font-bold text-foreground mt-1">₹8.9L</div>
+                    <div className="text-[9px] text-muted-foreground">13% Volume</div>
                   </div>
-                  <div className="p-3 bg-black/60 border border-white/10">
-                    <div className="text-[10px] text-[#C8FF16]">DELHI NCR [DEL]</div>
-                    <div className="text-base font-bold text-white mt-1">₹4.5L</div>
-                    <div className="text-[9px] text-white/40">7% Volume</div>
+                  <div className="p-3 bg-black/60 border border-border/50">
+                    <div className="text-[10px] text-accent">DELHI NCR [DEL]</div>
+                    <div className="text-base font-bold text-foreground mt-1">₹4.5L</div>
+                    <div className="text-[9px] text-muted-foreground">7% Volume</div>
                   </div>
-                  <div className="p-3 bg-black/60 border border-white/10">
-                    <div className="text-[10px] text-[#C8FF16]">PUNE [PNE]</div>
-                    <div className="text-base font-bold text-white mt-1">₹2.0L</div>
-                    <div className="text-[9px] text-white/40">3% Volume</div>
+                  <div className="p-3 bg-black/60 border border-border/50">
+                    <div className="text-[10px] text-accent">PUNE [PNE]</div>
+                    <div className="text-base font-bold text-foreground mt-1">₹2.0L</div>
+                    <div className="text-[9px] text-muted-foreground">3% Volume</div>
                   </div>
                 </div>
               </div>
@@ -263,9 +263,9 @@ function CommandCenterContent() {
 
           {/* 2. EVENTS MODERATION */}
           {activeTab === 'events' && (
-            <div className="bg-[#0e100c] border border-white/10 overflow-x-auto">
-              <table className="w-full text-left text-xs text-white">
-                <thead className="bg-black text-[10px] uppercase text-white/50 border-b border-white/10">
+            <div className="bg-card border border-border/50 overflow-x-auto">
+              <table className="w-full text-left text-xs text-foreground">
+                <thead className="bg-black text-[10px] uppercase text-muted-foreground border-b border-border/50">
                   <tr>
                     <th className="p-4">CODE</th>
                     <th className="p-4">TITLE</th>
@@ -277,13 +277,13 @@ function CommandCenterContent() {
                 </thead>
                 <tbody className="divide-y divide-white/5">
                   {events.map(ev => (
-                    <tr key={ev.id} className="hover:bg-white/5">
-                      <td className="p-4 font-bold text-[#C8FF16]">{ev.code}</td>
+                    <tr key={ev.id} className="hover:bg-foreground/5">
+                      <td className="p-4 font-bold text-accent">{ev.code}</td>
                       <td className="p-4 font-bold">{ev.title}</td>
-                      <td className="p-4 text-white/60">{ev.city} • {ev.venueName}</td>
+                      <td className="p-4 text-muted-foreground">{ev.city} • {ev.venueName}</td>
                       <td className="p-4">{ev.organizerName}</td>
                       <td className="p-4">
-                        <span className="px-2 py-0.5 bg-black border border-white/20 text-[10px] uppercase font-bold">
+                        <span className="px-2 py-0.5 bg-black border border-border text-[10px] uppercase font-bold">
                           {ev.status}
                         </span>
                       </td>
@@ -292,14 +292,14 @@ function CommandCenterContent() {
                           <button
                             onClick={() => handleToggleFeature(ev.id, !!ev.isFeatured)}
                             className={`px-2 py-1 border text-[10px] uppercase font-bold ${
-                              ev.isFeatured ? 'bg-[#C8FF16] text-black border-[#C8FF16]' : 'bg-[#171914] text-white/60 border-white/20'
+                              ev.isFeatured ? 'bg-accent text-black border-accent' : 'bg-card text-muted-foreground border-border'
                             }`}
                           >
                             {ev.isFeatured ? 'FEATURED' : 'FEATURE'}
                           </button>
                           <Link
                             href={`/events/${ev.slug}`}
-                            className="p-1 text-white/60 hover:text-white"
+                            className="p-1 text-muted-foreground hover:text-foreground"
                             title="Inspect"
                           >
                             <ArrowRight className="w-4 h-4" />
@@ -317,20 +317,20 @@ function CommandCenterContent() {
           {activeTab === 'kyc' && (
             <div className="space-y-4">
               {organizers.map(org => (
-                <div key={org.id} className="p-6 bg-[#0e100c] border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div key={org.id} className="p-6 bg-card border border-border/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-4">
-                    <img src={org.logoUrl} alt={org.name} className="w-16 h-16 object-cover border border-white/20" />
+                    <img src={org.logoUrl} alt={org.name} className="w-16 h-16 object-cover border border-border" />
                     <div>
                       <div className="flex items-center gap-2">
-                        <h3 className="text-base font-black uppercase text-white">{org.name}</h3>
-                        <span className="px-2 py-0.5 bg-[#C8FF16]/20 text-[#C8FF16] text-[10px] uppercase font-bold">
+                        <h3 className="text-base font-black uppercase text-foreground">{org.name}</h3>
+                        <span className="px-2 py-0.5 bg-accent/20 text-accent text-[10px] uppercase font-bold">
                           {org.kycStatus.toUpperCase()}
                         </span>
                       </div>
-                      <p className="text-xs text-white/60 font-sans mt-0.5">
+                      <p className="text-xs text-muted-foreground font-sans mt-0.5">
                         GSTIN: {org.gstin || '27AABCS1429M1ZB'} • PAN: {org.panNumber || 'AABCS1429M'}
                       </p>
-                      <div className="text-[11px] text-white/40 mt-1">
+                      <div className="text-[11px] text-muted-foreground mt-1">
                         Bank: {org.bankDetails?.bankName || 'HDFC Bank, Fort Branch Mumbai'}
                       </div>
                     </div>
@@ -340,14 +340,14 @@ function CommandCenterContent() {
                     {!org.isVerified && (
                       <button
                         onClick={() => handleApproveKyc(org.id)}
-                        className="px-4 py-2 bg-[#C8FF16] text-black font-black uppercase text-xs"
+                        className="px-4 py-2 bg-accent text-black font-black uppercase text-xs"
                       >
                         APPROVE KYC BADGE
                       </button>
                     )}
                     <Link
                       href={`/organizer/${org.slug}`}
-                      className="px-3 py-2 bg-black border border-white/20 text-xs font-bold uppercase text-white hover:bg-white hover:text-black"
+                      className="px-3 py-2 bg-black border border-border text-xs font-bold uppercase text-foreground hover:bg-foreground hover:text-black"
                     >
                       VIEW PROFILE ↗
                     </Link>
@@ -359,9 +359,9 @@ function CommandCenterContent() {
 
           {/* 4. SETTLEMENTS */}
           {activeTab === 'settlements' && (
-            <div className="bg-[#0e100c] border border-white/10 overflow-x-auto">
-              <table className="w-full text-left text-xs text-white">
-                <thead className="bg-black text-[10px] uppercase text-white/50 border-b border-white/10">
+            <div className="bg-card border border-border/50 overflow-x-auto">
+              <table className="w-full text-left text-xs text-foreground">
+                <thead className="bg-black text-[10px] uppercase text-muted-foreground border-b border-border/50">
                   <tr>
                     <th className="p-4">INVOICE</th>
                     <th className="p-4">HOST ENTITY</th>
@@ -374,15 +374,15 @@ function CommandCenterContent() {
                 </thead>
                 <tbody className="divide-y divide-white/5">
                   {settlements.map(set => (
-                    <tr key={set.id} className="hover:bg-white/5">
-                      <td className="p-4 font-bold text-[#C8FF16]">{set.invoiceNumber}</td>
+                    <tr key={set.id} className="hover:bg-foreground/5">
+                      <td className="p-4 font-bold text-accent">{set.invoiceNumber}</td>
                       <td className="p-4 font-bold">{set.organizerName}</td>
                       <td className="p-4 font-sans">{set.eventTitle}</td>
                       <td className="p-4">₹{set.grossSales.toLocaleString('en-IN')}</td>
-                      <td className="p-4 font-black text-white">₹{set.netPayoutAmount.toLocaleString('en-IN')}</td>
+                      <td className="p-4 font-black text-foreground">₹{set.netPayoutAmount.toLocaleString('en-IN')}</td>
                       <td className="p-4">
                         <span className={`px-2 py-0.5 text-[9px] uppercase font-bold ${
-                          set.status === 'settled' ? 'bg-[#C8FF16] text-black' : 'bg-[#FF6B00]/20 text-[#FF6B00]'
+                          set.status === 'settled' ? 'bg-accent text-black' : 'bg-danger/20 text-danger'
                         }`}>
                           {set.status}
                         </span>
@@ -391,7 +391,7 @@ function CommandCenterContent() {
                         {set.status !== 'settled' && (
                           <button
                             onClick={() => handleReleaseSettlement(set.id)}
-                            className="px-3 py-1.5 bg-[#C8FF16] hover:bg-[#b8ea14] text-black font-black uppercase text-[10px]"
+                            className="px-3 py-1.5 bg-accent hover:bg-accent-hover text-black font-black uppercase text-[10px]"
                           >
                             RELEASE PAYOUT
                           </button>
@@ -409,25 +409,25 @@ function CommandCenterContent() {
             <div className="space-y-4">
               {pendingRefunds.length > 0 ? (
                 pendingRefunds.map(ord => (
-                  <div key={ord.id} className="p-6 bg-[#0e100c] border border-[#FF6B00] space-y-4">
+                  <div key={ord.id} className="p-6 bg-card border border-danger space-y-4">
                     <div className="flex justify-between items-start">
                       <div>
-                        <div className="text-sm font-black uppercase text-white">{ord.customerName}</div>
-                        <div className="text-xs text-white/60">ORDER: {ord.orderNumber} • ₹{ord.totalAmount.toLocaleString('en-IN')}</div>
-                        <p className="text-xs text-[#FF6B00] font-sans mt-2">
+                        <div className="text-sm font-black uppercase text-foreground">{ord.customerName}</div>
+                        <div className="text-xs text-muted-foreground">ORDER: {ord.orderNumber} • ₹{ord.totalAmount.toLocaleString('en-IN')}</div>
+                        <p className="text-xs text-danger font-sans mt-2">
                           Reason: {ord.refundReason || 'Customer requested refund'}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleProcessRefund(ord.id, true)}
-                          className="px-4 py-2 bg-[#C8FF16] text-black font-black uppercase text-xs"
+                          className="px-4 py-2 bg-accent text-black font-black uppercase text-xs"
                         >
                           APPROVE & RELEASE INVENTORY
                         </button>
                         <button
                           onClick={() => handleProcessRefund(ord.id, false)}
-                          className="px-4 py-2 bg-[#FF314A] text-white font-bold uppercase text-xs"
+                          className="px-4 py-2 bg-danger text-foreground font-bold uppercase text-xs"
                         >
                           REJECT CLAIM
                         </button>
@@ -436,7 +436,7 @@ function CommandCenterContent() {
                   </div>
                 ))
               ) : (
-                <div className="py-16 text-center bg-[#0d0f0c] border border-white/10 text-white/50">
+                <div className="py-16 text-center bg-card border border-border/50 text-muted-foreground">
                   NO PENDING REFUND CLAIMS ON PROTOCOL
                 </div>
               )}
@@ -445,9 +445,9 @@ function CommandCenterContent() {
 
           {/* 6. USERS */}
           {activeTab === 'users' && (
-            <div className="bg-[#0e100c] border border-white/10 overflow-x-auto">
-              <table className="w-full text-left text-xs text-white">
-                <thead className="bg-black text-[10px] uppercase text-white/50 border-b border-white/10">
+            <div className="bg-card border border-border/50 overflow-x-auto">
+              <table className="w-full text-left text-xs text-foreground">
+                <thead className="bg-black text-[10px] uppercase text-muted-foreground border-b border-border/50">
                   <tr>
                     <th className="p-4">USER NAME</th>
                     <th className="p-4">EMAIL</th>
@@ -458,16 +458,16 @@ function CommandCenterContent() {
                 </thead>
                 <tbody className="divide-y divide-white/5">
                   {usersList.map(u => (
-                    <tr key={u.id} className="hover:bg-white/5">
+                    <tr key={u.id} className="hover:bg-foreground/5">
                       <td className="p-4 font-bold">{u.name}</td>
-                      <td className="p-4 font-mono text-white/70">{u.email}</td>
+                      <td className="p-4 font-mono text-foreground/70">{u.email}</td>
                       <td className="p-4">{u.phone}</td>
                       <td className="p-4">
-                        <span className="px-2 py-0.5 bg-[#C8FF16]/20 text-[#C8FF16] font-bold text-[10px] uppercase">
+                        <span className="px-2 py-0.5 bg-accent/20 text-accent font-bold text-[10px] uppercase">
                           {u.role}
                         </span>
                       </td>
-                      <td className="p-4 text-white/60">{u.city}</td>
+                      <td className="p-4 text-muted-foreground">{u.city}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -477,21 +477,21 @@ function CommandCenterContent() {
 
           {/* 7. AUDIT LOGS */}
           {activeTab === 'audit' && (
-            <div className="bg-[#0e100c] border border-white/10 p-6 space-y-3 font-mono text-xs">
-              <div className="text-white font-bold uppercase pb-3 border-b border-white/10">
+            <div className="bg-card border border-border/50 p-6 space-y-3 font-mono text-xs">
+              <div className="text-foreground font-bold uppercase pb-3 border-b border-border/50">
                 PLATFORM CRYPTOGRAPHIC AUDIT STREAM
               </div>
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {auditLogs.map(log => (
-                  <div key={log.id} className="p-3 bg-black/60 border border-white/10 flex items-start justify-between gap-4">
+                  <div key={log.id} className="p-3 bg-black/60 border border-border/50 flex items-start justify-between gap-4">
                     <div className="space-y-0.5">
-                      <div className="text-[#C8FF16] font-bold uppercase">[{log.action}]</div>
-                      <div className="text-white/80 font-sans">{log.details}</div>
-                      <div className="text-[10px] text-white/40">
+                      <div className="text-accent font-bold uppercase">[{log.action}]</div>
+                      <div className="text-foreground/80 font-sans">{log.details}</div>
+                      <div className="text-[10px] text-muted-foreground">
                         ADMIN: {log.adminEmail} • IP: {log.ipAddress}
                       </div>
                     </div>
-                    <div className="text-[10px] text-white/40 shrink-0">
+                    <div className="text-[10px] text-muted-foreground shrink-0">
                       {new Date(log.timestamp).toLocaleString()}
                     </div>
                   </div>

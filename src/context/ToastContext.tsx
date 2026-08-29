@@ -52,34 +52,34 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         {toasts.map(item => (
           <div
             key={item.id}
-            className={`pointer-events-auto flex items-start gap-3 p-4 border bg-[#0d0f0c] shadow-2xl transition-all duration-300 transform translate-y-0 ${
+            className={`pointer-events-auto flex items-start gap-3 p-4 border bg-card transition-all duration-300 transform translate-y-0 ${
               item.type === 'success'
-                ? 'border-[#C8FF16] text-[#F1F1EB]'
+                ? 'border-accent text-foreground'
                 : item.type === 'error'
-                ? 'border-[#FF314A] text-[#F1F1EB]'
+                ? 'border-danger text-foreground'
                 : item.type === 'warning'
-                ? 'border-[#FF6B00] text-[#F1F1EB]'
-                : 'border-white/20 text-[#F1F1EB]'
+                ? 'border-danger text-foreground'
+                : 'border-border text-foreground'
             }`}
           >
             <div className="mt-0.5 shrink-0">
-              {item.type === 'success' && <CheckCircle2 className="w-5 h-5 text-[#C8FF16]" />}
-              {item.type === 'error' && <XCircle className="w-5 h-5 text-[#FF314A]" />}
-              {item.type === 'warning' && <AlertTriangle className="w-5 h-5 text-[#FF6B00]" />}
-              {item.type === 'info' && <Info className="w-5 h-5 text-white/80" />}
+              {item.type === 'success' && <CheckCircle2 className="w-5 h-5 text-accent" />}
+              {item.type === 'error' && <XCircle className="w-5 h-5 text-danger" />}
+              {item.type === 'warning' && <AlertTriangle className="w-5 h-5 text-danger" />}
+              {item.type === 'info' && <Info className="w-5 h-5 text-foreground/80" />}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="font-mono text-xs uppercase tracking-widest text-white/50 mb-0.5">
+              <div className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-0.5">
                 GATE PROTOCOL // {item.type}
               </div>
-              <div className="text-sm font-bold tracking-tight text-white">{item.title}</div>
+              <div className="text-sm font-bold tracking-tight text-foreground">{item.title}</div>
               {item.description && (
-                <div className="text-xs text-white/70 mt-1 leading-relaxed">{item.description}</div>
+                <div className="text-xs text-foreground/70 mt-1 leading-relaxed">{item.description}</div>
               )}
             </div>
             <button
               onClick={() => removeToast(item.id)}
-              className="text-white/40 hover:text-white transition-colors shrink-0 p-1"
+              className="text-muted-foreground hover:text-foreground transition-colors shrink-0 p-1"
             >
               <X className="w-4 h-4" />
             </button>

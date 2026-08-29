@@ -159,7 +159,7 @@ function CreateEventWizard() {
       isTrending: true,
       isSellingFast: false,
       isVerifiedOrganizer: true,
-      accentColor: '#C8FF16',
+      accentColor: '#D4F00D',
       posterUrl,
       coverBannerUrl: posterUrl,
       startDate: new Date(startDate).toISOString(),
@@ -221,33 +221,33 @@ function CreateEventWizard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#F1F1EB] flex flex-col font-mono selection:bg-[#C8FF16] selection:text-black">
+    <div className="min-h-screen bg-background text-foreground flex flex-col font-mono selection:bg-accent selection:text-black">
       <RoleBanner />
       <Navbar />
 
       <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
         
         {/* Wizard Header */}
-        <div className="pb-6 border-b border-white/10 flex items-center justify-between">
+        <div className="pb-6 border-b border-border/50 flex items-center justify-between">
           <div>
-            <div className="text-[10px] uppercase tracking-widest text-[#C8FF16] font-bold">
+            <div className="text-[10px] uppercase tracking-widest text-accent font-bold">
               BUILDER PROTOCOL // STEP {step} OF 5
             </div>
-            <h1 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-white mt-1">
+            <h1 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-foreground mt-1">
               CREATE NEW EVENT
             </h1>
           </div>
 
-          <div className="flex items-center gap-1.5 text-xs text-white/50">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             {[1, 2, 3, 4, 5].map(s => (
               <div
                 key={s}
                 className={`w-7 h-7 flex items-center justify-center border font-bold ${
                   step === s
-                    ? 'border-[#C8FF16] bg-[#C8FF16] text-black'
+                    ? 'border-accent bg-accent text-black'
                     : step > s
-                    ? 'border-white bg-white/20 text-white'
-                    : 'border-white/20 text-white/40'
+                    ? 'border-foreground bg-foreground/20 text-foreground'
+                    : 'border-border text-muted-foreground'
                 }`}
               >
                 {s}
@@ -260,7 +260,7 @@ function CreateEventWizard() {
         {step === 1 && (
           <div className="py-8 space-y-6">
             <div>
-              <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+              <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                 EVENT TITLE *
               </label>
               <input
@@ -268,20 +268,20 @@ function CreateEventWizard() {
                 value={title}
                 onChange={e => setTitle(e.target.value)}
                 placeholder="e.g. MONOLITH: Raw Industrial Assembly"
-                className="w-full bg-[#0e100c] border border-white/20 p-3 text-sm text-white font-bold focus:border-[#C8FF16] focus:outline-none"
+                className="w-full bg-card border border-border p-3 text-sm text-foreground font-bold focus:border-accent focus:outline-none"
                 required
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+                <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                   CATEGORY *
                 </label>
                 <select
                   value={category}
                   onChange={e => setCategory(e.target.value)}
-                  className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white uppercase focus:border-[#C8FF16]"
+                  className="w-full bg-card border border-border p-3 text-xs text-foreground uppercase focus:border-accent"
                 >
                   {CATEGORIES.filter(c => c.id !== 'all').map(cat => (
                     <option key={cat.id} value={cat.slug}>{cat.name.toUpperCase()}</option>
@@ -290,7 +290,7 @@ function CreateEventWizard() {
               </div>
 
               <div>
-                <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+                <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                   SUB-GENRE / ATMOSPHERE
                 </label>
                 <input
@@ -298,13 +298,13 @@ function CreateEventWizard() {
                   value={subcategory}
                   onChange={e => setSubcategory(e.target.value)}
                   placeholder="e.g. Dark Techno & Ambient"
-                  className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white"
+                  className="w-full bg-card border border-border p-3 text-xs text-foreground"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+              <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                 SHORT MANIFESTO (TAGLINE)
               </label>
               <input
@@ -312,12 +312,12 @@ function CreateEventWizard() {
                 value={tagline}
                 onChange={e => setTagline(e.target.value)}
                 placeholder="e.g. 10 hours of modular live synthesis inside a disused hangar"
-                className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white"
+                className="w-full bg-card border border-border p-3 text-xs text-foreground"
               />
             </div>
 
             <div>
-              <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+              <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                 FULL DESCRIPTION & PROGRAM DETAILS
               </label>
               <textarea
@@ -325,7 +325,7 @@ function CreateEventWizard() {
                 value={description}
                 onChange={e => setDescription(e.target.value)}
                 placeholder="Full program notes, artist backgrounds, sound specifications..."
-                className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white focus:border-[#C8FF16]"
+                className="w-full bg-card border border-border p-3 text-xs text-foreground focus:border-accent"
               />
             </div>
 
@@ -334,7 +334,7 @@ function CreateEventWizard() {
                 type="button"
                 onClick={() => setStep(2)}
                 disabled={!title}
-                className="px-6 py-3 bg-[#C8FF16] text-black font-black uppercase text-xs flex items-center gap-2 hover:bg-[#b8ea14] disabled:opacity-40"
+                className="px-6 py-3 bg-accent text-black font-black uppercase text-xs flex items-center gap-2 hover:bg-accent-hover disabled:opacity-40"
               >
                 <span>NEXT: DATE & VENUE</span>
                 <ArrowRight className="w-4 h-4" />
@@ -348,13 +348,13 @@ function CreateEventWizard() {
           <div className="py-8 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+                <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                   CITY HUB *
                 </label>
                 <select
                   value={city}
                   onChange={e => setCity(e.target.value)}
-                  className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white uppercase focus:border-[#C8FF16]"
+                  className="w-full bg-card border border-border p-3 text-xs text-foreground uppercase focus:border-accent"
                 >
                   {CITIES.filter(c => c.id !== 'all').map(c => (
                     <option key={c.id} value={c.name}>{c.name.toUpperCase()}</option>
@@ -363,21 +363,21 @@ function CreateEventWizard() {
               </div>
 
               <div>
-                <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+                <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                   START DATE & TIME *
                 </label>
                 <input
                   type="datetime-local"
                   value={startDate}
                   onChange={e => setStartDate(e.target.value)}
-                  className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white focus:border-[#C8FF16]"
+                  className="w-full bg-card border border-border p-3 text-xs text-foreground focus:border-accent"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+                <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                   VENUE NAME *
                 </label>
                 <input
@@ -385,13 +385,13 @@ function CreateEventWizard() {
                   value={venueName}
                   onChange={e => setVenueName(e.target.value)}
                   placeholder="e.g. The Forging Shed / Secret Docklands"
-                  className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white focus:border-[#C8FF16]"
+                  className="w-full bg-card border border-border p-3 text-xs text-foreground focus:border-accent"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+                <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                   VENUE FULL ADDRESS
                 </label>
                 <input
@@ -399,22 +399,22 @@ function CreateEventWizard() {
                   value={venueAddress}
                   onChange={e => setVenueAddress(e.target.value)}
                   placeholder="e.g. Reay Road East, Mumbai 400010"
-                  className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white"
+                  className="w-full bg-card border border-border p-3 text-xs text-foreground"
                 />
               </div>
             </div>
 
             {/* Secret Location Toggle */}
-            <div className="p-4 bg-[#0e100c] border border-white/10 space-y-3">
-              <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-white">
+            <div className="p-4 bg-card border border-border/50 space-y-3">
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-foreground">
                 <input
                   type="checkbox"
                   checked={isSecretLocation}
                   onChange={e => setIsSecretLocation(e.target.checked)}
-                  className="accent-[#C8FF16]"
+                  className="accent-accent"
                 />
                 <span className="flex items-center gap-1.5">
-                  <Lock className="w-3.5 h-3.5 text-[#C8FF16]" />
+                  <Lock className="w-3.5 h-3.5 text-accent" />
                   SECRET VENUE / COORDINATES SENT VIA SMS PRIOR TO EVENT
                 </span>
               </label>
@@ -425,7 +425,7 @@ function CreateEventWizard() {
                   value={secretInstructions}
                   onChange={e => setSecretInstructions(e.target.value)}
                   placeholder="Secret access pin or gate meeting coordinates..."
-                  className="w-full bg-black border border-white/20 p-2.5 text-xs text-white"
+                  className="w-full bg-black border border-border p-2.5 text-xs text-foreground"
                 />
               )}
             </div>
@@ -434,7 +434,7 @@ function CreateEventWizard() {
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="px-4 py-2 bg-black border border-white/20 text-xs font-bold uppercase text-white"
+                className="px-4 py-2 bg-black border border-border text-xs font-bold uppercase text-foreground"
               >
                 ← BACK
               </button>
@@ -442,7 +442,7 @@ function CreateEventWizard() {
                 type="button"
                 onClick={() => setStep(3)}
                 disabled={!venueName}
-                className="px-6 py-3 bg-[#C8FF16] text-black font-black uppercase text-xs flex items-center gap-2 hover:bg-[#b8ea14] disabled:opacity-40"
+                className="px-6 py-3 bg-accent text-black font-black uppercase text-xs flex items-center gap-2 hover:bg-accent-hover disabled:opacity-40"
               >
                 <span>NEXT: POSTER & ARTWORK</span>
                 <ArrowRight className="w-4 h-4" />
@@ -455,20 +455,20 @@ function CreateEventWizard() {
         {step === 3 && (
           <div className="py-8 space-y-6">
             <div>
-              <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+              <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                 POSTER IMAGE URL
               </label>
               <input
                 type="url"
                 value={posterUrl}
                 onChange={e => setPosterUrl(e.target.value)}
-                className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white focus:border-[#C8FF16]"
+                className="w-full bg-card border border-border p-3 text-xs text-foreground focus:border-accent"
               />
             </div>
 
             {/* Poster Presets */}
             <div>
-              <div className="text-[10px] text-white/50 uppercase mb-2">QUICK POSTER PRESETS:</div>
+              <div className="text-[10px] text-muted-foreground uppercase mb-2">QUICK POSTER PRESETS:</div>
               <div className="grid grid-cols-3 gap-2">
                 {[
                   'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=800&auto=format&fit=crop',
@@ -479,7 +479,7 @@ function CreateEventWizard() {
                     key={idx}
                     type="button"
                     onClick={() => setPosterUrl(preset)}
-                    className="relative aspect-video bg-black border border-white/20 overflow-hidden hover:border-[#C8FF16]"
+                    className="relative aspect-video bg-black border border-border overflow-hidden hover:border-accent"
                   >
                     <img src={preset} alt="preset" className="w-full h-full object-cover" />
                   </button>
@@ -488,11 +488,11 @@ function CreateEventWizard() {
             </div>
 
             {/* Live Preview */}
-            <div className="p-4 bg-[#0e100c] border border-white/10 flex items-center gap-4">
-              <img src={posterUrl} alt="Live poster preview" className="w-20 h-24 object-cover border border-white/20" />
+            <div className="p-4 bg-card border border-border/50 flex items-center gap-4">
+              <img src={posterUrl} alt="Live poster preview" className="w-20 h-24 object-cover border border-border" />
               <div>
-                <div className="text-sm font-black uppercase text-white">{title || 'UNTITLED EVENT'}</div>
-                <div className="text-xs text-[#C8FF16]">{city} • {venueName || 'VENUE'}</div>
+                <div className="text-sm font-black uppercase text-foreground">{title || 'UNTITLED EVENT'}</div>
+                <div className="text-xs text-accent">{city} • {venueName || 'VENUE'}</div>
               </div>
             </div>
 
@@ -500,14 +500,14 @@ function CreateEventWizard() {
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="px-4 py-2 bg-black border border-white/20 text-xs font-bold uppercase text-white"
+                className="px-4 py-2 bg-black border border-border text-xs font-bold uppercase text-foreground"
               >
                 ← BACK
               </button>
               <button
                 type="button"
                 onClick={() => setStep(4)}
-                className="px-6 py-3 bg-[#C8FF16] text-black font-black uppercase text-xs flex items-center gap-2 hover:bg-[#b8ea14]"
+                className="px-6 py-3 bg-accent text-black font-black uppercase text-xs flex items-center gap-2 hover:bg-accent-hover"
               >
                 <span>NEXT: CONFIGURE TIERS</span>
                 <ArrowRight className="w-4 h-4" />
@@ -519,12 +519,12 @@ function CreateEventWizard() {
         {/* STEP 4: TICKET TIERS */}
         {step === 4 && (
           <div className="py-8 space-y-6">
-            <div className="flex justify-between items-center pb-2 border-b border-white/10">
-              <span className="text-xs font-black uppercase text-white">ACCESS PASS TIERS</span>
+            <div className="flex justify-between items-center pb-2 border-b border-border/50">
+              <span className="text-xs font-black uppercase text-foreground">ACCESS PASS TIERS</span>
               <button
                 type="button"
                 onClick={handleAddTier}
-                className="px-3 py-1.5 bg-[#C8FF16] text-black font-bold uppercase text-xs flex items-center gap-1"
+                className="px-3 py-1.5 bg-accent text-black font-bold uppercase text-xs flex items-center gap-1"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>ADD PASS TIER</span>
@@ -533,14 +533,14 @@ function CreateEventWizard() {
 
             <div className="space-y-4">
               {tiers.map((t, idx) => (
-                <div key={t.id} className="p-4 bg-[#0e100c] border border-white/20 space-y-3">
+                <div key={t.id} className="p-4 bg-card border border-border space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs font-black uppercase text-[#C8FF16]">TIER #{idx + 1}</span>
+                    <span className="text-xs font-black uppercase text-accent">TIER #{idx + 1}</span>
                     {tiers.length > 1 && (
                       <button
                         type="button"
                         onClick={() => handleRemoveTier(idx)}
-                        className="text-white/40 hover:text-[#FF314A]"
+                        className="text-muted-foreground hover:text-danger"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -549,43 +549,43 @@ function CreateEventWizard() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-[10px] uppercase text-white/50 mb-1">TIER NAME</label>
+                      <label className="block text-[10px] uppercase text-muted-foreground mb-1">TIER NAME</label>
                       <input
                         type="text"
                         value={t.name}
                         onChange={e => handleTierUpdate(idx, 'name', e.target.value)}
-                        className="w-full bg-black border border-white/20 p-2 text-xs text-white"
+                        className="w-full bg-black border border-border p-2 text-xs text-foreground"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[10px] uppercase text-white/50 mb-1">PRICE (INR ₹)</label>
+                      <label className="block text-[10px] uppercase text-muted-foreground mb-1">PRICE (INR ₹)</label>
                       <input
                         type="number"
                         value={t.price}
                         onChange={e => handleTierUpdate(idx, 'price', Number(e.target.value))}
-                        className="w-full bg-black border border-white/20 p-2 text-xs text-white"
+                        className="w-full bg-black border border-border p-2 text-xs text-foreground"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[10px] uppercase text-white/50 mb-1">TOTAL QUANTITY</label>
+                      <label className="block text-[10px] uppercase text-muted-foreground mb-1">TOTAL QUANTITY</label>
                       <input
                         type="number"
                         value={t.totalQuantity}
                         onChange={e => handleTierUpdate(idx, 'totalQuantity', Number(e.target.value))}
-                        className="w-full bg-black border border-white/20 p-2 text-xs text-white"
+                        className="w-full bg-black border border-border p-2 text-xs text-foreground"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-[10px] uppercase text-white/50 mb-1">PERKS / ENTRY DETAILS</label>
+                    <label className="block text-[10px] uppercase text-muted-foreground mb-1">PERKS / ENTRY DETAILS</label>
                     <input
                       type="text"
                       value={t.description}
                       onChange={e => handleTierUpdate(idx, 'description', e.target.value)}
-                      className="w-full bg-black border border-white/20 p-2 text-xs text-white"
+                      className="w-full bg-black border border-border p-2 text-xs text-foreground"
                     />
                   </div>
                 </div>
@@ -596,14 +596,14 @@ function CreateEventWizard() {
               <button
                 type="button"
                 onClick={() => setStep(3)}
-                className="px-4 py-2 bg-black border border-white/20 text-xs font-bold uppercase text-white"
+                className="px-4 py-2 bg-black border border-border text-xs font-bold uppercase text-foreground"
               >
                 ← BACK
               </button>
               <button
                 type="button"
                 onClick={() => setStep(5)}
-                className="px-6 py-3 bg-[#C8FF16] text-black font-black uppercase text-xs flex items-center gap-2 hover:bg-[#b8ea14]"
+                className="px-6 py-3 bg-accent text-black font-black uppercase text-xs flex items-center gap-2 hover:bg-accent-hover"
               >
                 <span>NEXT: POLICIES & PUBLISH</span>
                 <ArrowRight className="w-4 h-4" />
@@ -617,13 +617,13 @@ function CreateEventWizard() {
           <div className="py-8 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+                <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                   AGE RESTRICTION *
                 </label>
                 <select
                   value={ageRestriction}
                   onChange={e => setAgeRestriction(e.target.value as any)}
-                  className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white uppercase focus:border-[#C8FF16]"
+                  className="w-full bg-card border border-border p-3 text-xs text-foreground uppercase focus:border-accent"
                 >
                   <option value="21+">21+ ONLY</option>
                   <option value="18+">18+ ONLY</option>
@@ -632,48 +632,48 @@ function CreateEventWizard() {
               </div>
 
               <div>
-                <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+                <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                   CAMERA & PHONE POLICY
                 </label>
                 <input
                   type="text"
                   value={phonePolicy}
                   onChange={e => setPhonePolicy(e.target.value)}
-                  className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white"
+                  className="w-full bg-card border border-border p-3 text-xs text-foreground"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+              <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                 DRESS CODE
               </label>
               <input
                 type="text"
                 value={dressCode}
                 onChange={e => setDressCode(e.target.value)}
-                className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white"
+                className="w-full bg-card border border-border p-3 text-xs text-foreground"
               />
             </div>
 
             <div>
-              <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+              <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                 REFUND & CANCELLATION POLICY
               </label>
               <input
                 type="text"
                 value={refundPolicyText}
                 onChange={e => setRefundPolicyText(e.target.value)}
-                className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white"
+                className="w-full bg-card border border-border p-3 text-xs text-foreground"
               />
             </div>
 
-            <div className="p-6 bg-[#0e100c] border-2 border-[#C8FF16] space-y-2">
-              <div className="text-xs font-black uppercase text-[#C8FF16] flex items-center gap-1.5">
+            <div className="p-6 bg-card border-2 border-accent space-y-2">
+              <div className="text-xs font-black uppercase text-accent flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4" />
                 GATE ZERO VERIFICATION CHECKLIST
               </div>
-              <p className="text-xs text-white/70 font-sans">
+              <p className="text-xs text-foreground/70 font-sans">
                 By publishing, this experience will immediately be activated on the national Gate Zero event radar and eligible for UPI/Razorpay ticket sales.
               </p>
             </div>
@@ -682,7 +682,7 @@ function CreateEventWizard() {
               <button
                 type="button"
                 onClick={() => setStep(4)}
-                className="px-4 py-2 bg-black border border-white/20 text-xs font-bold uppercase text-white"
+                className="px-4 py-2 bg-black border border-border text-xs font-bold uppercase text-foreground"
               >
                 ← BACK
               </button>
@@ -691,7 +691,7 @@ function CreateEventWizard() {
                 type="button"
                 onClick={handlePublish}
                 disabled={isSubmitting}
-                className="px-8 py-4 bg-[#C8FF16] text-black font-black uppercase text-sm flex items-center gap-2 hover:bg-[#b8ea14] shadow-2xl transition-transform active:scale-95 disabled:opacity-50"
+                className="px-8 py-4 bg-accent text-black font-black uppercase text-sm flex items-center gap-2 hover:bg-accent-hover transition-transform active:scale-95 disabled:opacity-50"
               >
                 <span>{isSubmitting ? 'ENCRYPTING & PUBLISHING...' : 'PUBLISH EVENT TO GRID ↗'}</span>
               </button>

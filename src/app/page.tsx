@@ -6,6 +6,7 @@ import { Footer } from '@/components/layout/Footer';
 import { RoleBanner } from '@/components/layout/RoleBanner';
 import { LoginModal } from '@/components/auth/LoginModal';
 import { HeroSection } from '@/components/home/HeroSection';
+import { StatsMarquee } from '@/components/home/StatsMarquee';
 import { TrendingSection } from '@/components/home/TrendingSection';
 import { CategorySection } from '@/components/home/CategorySection';
 import { CitySection } from '@/components/home/CitySection';
@@ -45,7 +46,7 @@ export default function HomePage() {
   return (
     <ToastProvider>
       <AuthProvider>
-        <div className="min-h-screen bg-[#050505] text-[#F1F1EB] flex flex-col selection:bg-[#C8FF16] selection:text-black">
+        <div className="min-h-screen bg-background text-foreground flex flex-col selection:bg-accent selection:text-black">
           {/* Demo Role Switcher Bar */}
           <RoleBanner />
 
@@ -55,6 +56,7 @@ export default function HomePage() {
           {/* Main Content */}
           <main className="flex-1">
             <HeroSection />
+            <StatsMarquee />
             <TrendingSection events={events} />
             <CategorySection />
             <CitySection />

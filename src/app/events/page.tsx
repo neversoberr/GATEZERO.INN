@@ -132,22 +132,22 @@ function EventsContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#F1F1EB] flex flex-col font-sans">
+    <div className="min-h-screen bg-background text-foreground flex flex-col font-sans">
       <RoleBanner />
       <Navbar />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
         
         {/* Page Header */}
-        <div className="pb-8 mb-8 border-b border-white/10 font-mono">
-          <div className="text-[10px] uppercase tracking-widest text-[#C8FF16] font-bold flex items-center gap-1.5">
+        <div className="pb-8 mb-8 border-b border-border/50 font-mono">
+          <div className="text-[10px] uppercase tracking-widest text-accent font-bold flex items-center gap-1.5">
             <Compass className="w-3.5 h-3.5" />
             DISCOVERY PROTOCOL // ALL GATES
           </div>
-          <h1 className="text-4xl sm:text-6xl font-black uppercase tracking-tight text-white mt-1">
+          <h1 className="text-4xl sm:text-6xl font-black uppercase tracking-tight text-foreground mt-1">
             FIND YOUR NEXT ROOM.
           </h1>
-          <p className="text-xs sm:text-sm text-white/60 font-sans mt-2 max-w-2xl">
+          <p className="text-xs sm:text-sm text-muted-foreground font-sans mt-2 max-w-2xl">
             Live cultural access across Mumbai, Bengaluru, Delhi, Goa, and Pune. Filter by city, sound profile, and venue atmosphere.
           </p>
         </div>
@@ -182,19 +182,19 @@ function EventsContent() {
             </div>
           ) : (
             /* Empty State */
-            <div className="py-20 text-center bg-[#0d0f0c] border border-white/10 font-mono p-8 space-y-4">
-              <div className="w-12 h-12 border border-[#C8FF16] text-[#C8FF16] flex items-center justify-center mx-auto text-xl font-bold">
+            <div className="py-20 text-center bg-card border border-border/50 font-mono p-8 space-y-4">
+              <div className="w-12 h-12 border border-accent text-accent flex items-center justify-center mx-auto text-xl font-bold">
                 00
               </div>
-              <h3 className="text-xl font-black uppercase text-white">
+              <h3 className="text-xl font-black uppercase text-foreground">
                 NOTHING THROUGH THIS GATE.
               </h3>
-              <p className="text-xs text-white/60 max-w-md mx-auto font-sans">
+              <p className="text-xs text-muted-foreground max-w-md mx-auto font-sans">
                 No active events match your current coordinates and filters. Adjust your city or price range to scan again.
               </p>
               <button
                 onClick={handleResetFilters}
-                className="px-6 py-2.5 bg-[#C8FF16] text-black font-black uppercase text-xs inline-flex items-center gap-2 mt-2"
+                className="px-6 py-2.5 bg-accent text-black font-black uppercase text-xs inline-flex items-center gap-2 mt-2"
               >
                 <FilterX className="w-4 h-4" />
                 <span>RESET ALL FILTERS</span>
@@ -221,7 +221,7 @@ export default function EventsPage() {
   return (
     <ToastProvider>
       <AuthProvider>
-        <Suspense fallback={<div className="min-h-screen bg-black text-white p-12 font-mono">LOADING RADAR...</div>}>
+        <Suspense fallback={<div className="min-h-screen bg-black text-foreground p-12 font-mono">LOADING RADAR...</div>}>
           <EventsContent />
         </Suspense>
       </AuthProvider>

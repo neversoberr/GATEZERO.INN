@@ -57,9 +57,9 @@ export function EventFilters({
   ].filter(Boolean);
 
   return (
-    <div className="space-y-4 font-mono text-xs text-[#F1F1EB]">
+    <div className="space-y-4 font-mono text-xs text-foreground">
       {/* Primary Industrial Search & Toolbar */}
-      <div className="bg-[#0e100c] border border-white/10 p-3 sm:p-4 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+      <div className="bg-card border border-border/50 p-3 sm:p-4 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
         
         {/* Search input */}
         <div className="relative flex-1">
@@ -68,13 +68,13 @@ export function EventFilters({
             placeholder="Search experiences, artists, venues, organizers..."
             value={filters.query}
             onChange={e => handleUpdate('query', e.target.value)}
-            className="w-full bg-black/60 border border-white/20 px-3 py-2.5 pl-9 text-xs text-white placeholder:text-white/40 focus:outline-none focus:border-[#C8FF16] transition-colors"
+            className="w-full bg-black/60 border border-border px-3 py-2.5 pl-9 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent transition-colors"
           />
-          <Search className="w-4 h-4 text-white/40 absolute left-3 top-3 pointer-events-none" />
+          <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-3 pointer-events-none" />
           {filters.query && (
             <button
               onClick={() => handleUpdate('query', '')}
-              className="absolute right-3 top-2.5 text-white/40 hover:text-white"
+              className="absolute right-3 top-2.5 text-muted-foreground hover:text-foreground"
             >
               <X className="w-4 h-4" />
             </button>
@@ -86,7 +86,7 @@ export function EventFilters({
           <select
             value={filters.city}
             onChange={e => handleUpdate('city', e.target.value)}
-            className="bg-black/60 border border-white/20 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C8FF16] uppercase cursor-pointer"
+            className="bg-black/60 border border-border px-3 py-2.5 text-xs text-foreground focus:outline-none focus:border-accent uppercase cursor-pointer"
           >
             {CITIES.map(c => (
               <option key={c.id} value={c.name === 'All Cities' ? 'all' : c.name}>
@@ -99,7 +99,7 @@ export function EventFilters({
           <select
             value={filters.category}
             onChange={e => handleUpdate('category', e.target.value)}
-            className="bg-black/60 border border-white/20 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C8FF16] uppercase cursor-pointer"
+            className="bg-black/60 border border-border px-3 py-2.5 text-xs text-foreground focus:outline-none focus:border-accent uppercase cursor-pointer"
           >
             {CATEGORIES.map(cat => (
               <option key={cat.id} value={cat.slug}>
@@ -112,7 +112,7 @@ export function EventFilters({
           <select
             value={filters.sort}
             onChange={e => handleUpdate('sort', e.target.value)}
-            className="bg-black/60 border border-white/20 px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C8FF16] uppercase cursor-pointer hidden lg:block"
+            className="bg-black/60 border border-border px-3 py-2.5 text-xs text-foreground focus:outline-none focus:border-accent uppercase cursor-pointer hidden lg:block"
           >
             <option value="featured">SORT: FEATURED</option>
             <option value="date_asc">SORT: DATE (SOONEST)</option>
@@ -126,25 +126,25 @@ export function EventFilters({
             onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
             className={`px-3 py-2.5 border uppercase flex items-center gap-1.5 transition-colors ${
               isAdvancedOpen || activeFilterCount.length > 0
-                ? 'bg-[#C8FF16] text-black border-[#C8FF16] font-bold'
-                : 'bg-black/60 text-white/80 border-white/20 hover:border-white'
+                ? 'bg-accent text-black border-accent font-bold'
+                : 'bg-black/60 text-foreground/80 border-border hover:border-foreground'
             }`}
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">FILTERS</span>
             {activeFilterCount.length > 0 && (
-              <span className="px-1.5 py-0.2 bg-black text-[#C8FF16] text-[10px] font-black">
+              <span className="px-1.5 py-0.2 bg-black text-accent text-[10px] font-black">
                 {activeFilterCount.length}
               </span>
             )}
           </button>
 
           {/* View Mode Switcher */}
-          <div className="flex border border-white/20 bg-black/60 p-0.5">
+          <div className="flex border border-border bg-black/60 p-0.5">
             <button
               onClick={() => handleUpdate('viewMode', 'grid')}
               className={`p-2 transition-colors ${
-                filters.viewMode === 'grid' ? 'bg-[#C8FF16] text-black font-bold' : 'text-white/60 hover:text-white'
+                filters.viewMode === 'grid' ? 'bg-accent text-black font-bold' : 'text-muted-foreground hover:text-foreground'
               }`}
               title="Grid View"
             >
@@ -153,7 +153,7 @@ export function EventFilters({
             <button
               onClick={() => handleUpdate('viewMode', 'list')}
               className={`p-2 transition-colors ${
-                filters.viewMode === 'list' ? 'bg-[#C8FF16] text-black font-bold' : 'text-white/60 hover:text-white'
+                filters.viewMode === 'list' ? 'bg-accent text-black font-bold' : 'text-muted-foreground hover:text-foreground'
               }`}
               title="List View"
             >
@@ -162,7 +162,7 @@ export function EventFilters({
             <button
               onClick={() => handleUpdate('viewMode', 'map')}
               className={`p-2 transition-colors ${
-                filters.viewMode === 'map' ? 'bg-[#C8FF16] text-black font-bold' : 'text-white/60 hover:text-white'
+                filters.viewMode === 'map' ? 'bg-accent text-black font-bold' : 'text-muted-foreground hover:text-foreground'
               }`}
               title="Radar Map View"
             >
@@ -174,17 +174,17 @@ export function EventFilters({
 
       {/* Advanced Filter Drawer */}
       {isAdvancedOpen && (
-        <div className="bg-[#121410] border border-white/10 p-4 sm:p-5 space-y-4 animate-in fade-in duration-200">
+        <div className="bg-card border border-border/50 p-4 sm:p-5 space-y-4 animate-in fade-in duration-200">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Format filter */}
             <div>
-              <label className="block text-[10px] uppercase tracking-widest text-white/50 mb-1.5">
+              <label className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">
                 VENUE FORMAT
               </label>
               <select
                 value={filters.format}
                 onChange={e => handleUpdate('format', e.target.value)}
-                className="w-full bg-black border border-white/20 p-2 text-xs text-white focus:outline-none focus:border-[#C8FF16] uppercase"
+                className="w-full bg-black border border-border p-2 text-xs text-foreground focus:outline-none focus:border-accent uppercase"
               >
                 <option value="all">ALL FORMATS</option>
                 <option value="warehouse">WAREHOUSE</option>
@@ -197,13 +197,13 @@ export function EventFilters({
 
             {/* Age filter */}
             <div>
-              <label className="block text-[10px] uppercase tracking-widest text-white/50 mb-1.5">
+              <label className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">
                 AGE RESTRICTION
               </label>
               <select
                 value={filters.age}
                 onChange={e => handleUpdate('age', e.target.value)}
-                className="w-full bg-black border border-white/20 p-2 text-xs text-white focus:outline-none focus:border-[#C8FF16] uppercase"
+                className="w-full bg-black border border-border p-2 text-xs text-foreground focus:outline-none focus:border-accent uppercase"
               >
                 <option value="all">ANY AGE</option>
                 <option value="21+">21+ ONLY</option>
@@ -214,9 +214,9 @@ export function EventFilters({
 
             {/* Price Max slider */}
             <div>
-              <div className="flex justify-between text-[10px] uppercase tracking-widest text-white/50 mb-1.5">
+              <div className="flex justify-between text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">
                 <span>MAX PRICE</span>
-                <span className="text-[#C8FF16] font-bold">
+                <span className="text-accent font-bold">
                   {filters.maxPrice >= 10000 ? 'NO LIMIT' : `₹${filters.maxPrice.toLocaleString('en-IN')}`}
                 </span>
               </div>
@@ -227,31 +227,31 @@ export function EventFilters({
                 step="500"
                 value={filters.maxPrice}
                 onChange={e => handleUpdate('maxPrice', Number(e.target.value))}
-                className="w-full accent-[#C8FF16] bg-black cursor-pointer"
+                className="w-full accent-accent bg-black cursor-pointer"
               />
             </div>
 
             {/* Toggles */}
             <div className="space-y-2 pt-2">
-              <label className="flex items-center gap-2 cursor-pointer text-xs text-white/80 hover:text-white">
+              <label className="flex items-center gap-2 cursor-pointer text-xs text-foreground/80 hover:text-foreground">
                 <input
                   type="checkbox"
                   checked={filters.verifiedOnly}
                   onChange={e => handleUpdate('verifiedOnly', e.target.checked)}
-                  className="accent-[#C8FF16]"
+                  className="accent-accent"
                 />
                 <span className="flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#C8FF16]" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-accent" />
                   VERIFIED ORGANIZERS ONLY
                 </span>
               </label>
 
-              <label className="flex items-center gap-2 cursor-pointer text-xs text-white/80 hover:text-white">
+              <label className="flex items-center gap-2 cursor-pointer text-xs text-foreground/80 hover:text-foreground">
                 <input
                   type="checkbox"
                   checked={filters.availableOnly}
                   onChange={e => handleUpdate('availableOnly', e.target.checked)}
-                  className="accent-[#C8FF16]"
+                  className="accent-accent"
                 />
                 <span>AVAILABLE TICKETS ONLY</span>
               </label>
@@ -261,24 +261,24 @@ export function EventFilters({
       )}
 
       {/* Active Filter Chips Bar & Results Counter */}
-      <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/60">
+      <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-muted-foreground">
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-white/40 uppercase">COORDINATES:</span>
-          <span className="text-white font-bold uppercase">{filters.city}</span>
+          <span className="text-muted-foreground uppercase">COORDINATES:</span>
+          <span className="text-foreground font-bold uppercase">{filters.city}</span>
           <span>•</span>
-          <span className="text-[#C8FF16] font-bold">{totalResults} EXPERIENCES FOUND</span>
+          <span className="text-accent font-bold">{totalResults} EXPERIENCES FOUND</span>
 
           {activeFilterCount.length > 0 && (
             <button
               onClick={onReset}
-              className="ml-2 px-2 py-0.5 bg-[#FF314A]/10 text-[#FF314A] hover:bg-[#FF314A] hover:text-black border border-[#FF314A]/30 uppercase transition-colors"
+              className="ml-2 px-2 py-0.5 bg-danger/10 text-danger hover:bg-danger hover:text-black border border-danger/30 uppercase transition-colors"
             >
               CLEAR ALL FILTERS ✕
             </button>
           )}
         </div>
 
-        <div className="text-[10px] text-white/40 uppercase hidden sm:block">
+        <div className="text-[10px] text-muted-foreground uppercase hidden sm:block">
           GATE ZERO DISCOVERY ENGINE v2.6
         </div>
       </div>

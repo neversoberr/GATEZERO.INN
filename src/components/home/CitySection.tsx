@@ -2,78 +2,67 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { CITIES } from '@/lib/data/initial-data';
-import { MapPin, ArrowRight } from 'lucide-react';
+import { MapPin } from 'lucide-react';
+import { SectionHeading } from '@/components/ui/SectionHeading';
+
+const popularCities = [
+  { name: 'Mumbai', code: 'MUM', desc: 'Dockland warehouses & coastal techno', count: 4, img: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?q=80&w=600&auto=format&fit=crop' },
+  { name: 'Bengaluru', code: 'BLR', desc: 'Spatial sound labs & modular synthesis', count: 2, img: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?q=80&w=600&auto=format&fit=crop' },
+  { name: 'Delhi', code: 'DEL', desc: 'Brutalist courtyards & heavy bass', count: 1, img: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?q=80&w=600&auto=format&fit=crop' },
+  { name: 'Goa', code: 'GOA', desc: 'Clifftop open airs & multi-day gatherings', count: 1, img: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=600&auto=format&fit=crop' },
+  { name: 'Pune', code: 'PNE', desc: 'Industrial lots & fast acid BPMs', count: 1, img: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=600&auto=format&fit=crop' },
+];
 
 export function CitySection() {
-  const popularCities = [
-    { name: 'Mumbai', code: 'MUM', desc: 'Dockland Warehouses & Coastal Techno', count: 4, img: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?q=80&w=600&auto=format&fit=crop' },
-    { name: 'Bengaluru', code: 'BLR', desc: 'Spatial Sound Labs & Modular Synthesis', count: 2, img: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?q=80&w=600&auto=format&fit=crop' },
-    { name: 'Delhi', code: 'DEL', desc: 'Brutalist Courtyards & Heavy Bass', count: 1, img: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?q=80&w=600&auto=format&fit=crop' },
-    { name: 'Goa', code: 'GOA', desc: 'Clifftop Open Airs & Multi-day Gathering', count: 1, img: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=600&auto=format&fit=crop' },
-    { name: 'Pune', code: 'PNE', desc: 'Industrial Lots & Fast Acid BPMs', count: 1, img: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=600&auto=format&fit=crop' },
-  ];
-
   return (
-    <section className="py-16 bg-[#050505] text-[#F1F1EB] font-mono">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <div className="pb-8 border-b border-white/10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
-          <div>
-            <div className="text-[10px] uppercase tracking-widest text-[#C8FF16] font-bold">
-              SCENE RADARS
-            </div>
-            <h2 className="text-3xl font-black uppercase text-white mt-1">
-              DISCOVER BY CITY
-            </h2>
-          </div>
-          <Link
-            href="/events"
-            className="text-xs font-bold uppercase text-white/60 hover:text-white flex items-center gap-1"
-          >
-            <span>MAP ALL CITIES</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#C8FF16]" />
-          </Link>
-        </div>
+    <section aria-labelledby="city-heading" className="bg-background py-24 md:py-32">
+      <div className="mx-auto w-full max-w-[95vw] px-4 md:px-8">
+        <SectionHeading
+          id="city-heading"
+          kicker="SCENE RADARS"
+          title="DISCOVER BY"
+          accentTitle="CITY"
+          actionHref="/events"
+          actionLabel="MAP ALL CITIES"
+        />
 
-        {/* Cities 5-Card Banner Matrix */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-8">
+        {/* Hairline-connected tall cards — poster stack */}
+        <div className="mt-12 grid grid-cols-1 gap-px border-2 border-border bg-border sm:grid-cols-2 lg:grid-cols-5">
           {popularCities.map(city => (
             <Link
               key={city.code}
               href={`/events?city=${encodeURIComponent(city.name)}`}
-              className="group relative aspect-[3/4] bg-[#0e100c] border border-white/10 hover:border-[#C8FF16] transition-all overflow-hidden flex flex-col justify-between p-5"
+              className="group relative flex aspect-[3/4] flex-col justify-between overflow-hidden bg-card p-6 transition-colors duration-300 hover:bg-accent"
             >
               <img
                 src={city.img}
-                alt={city.name}
-                className="absolute inset-0 w-full h-full object-cover grayscale opacity-30 group-hover:opacity-50 group-hover:scale-105 transition-all duration-500 pointer-events-none"
+                alt=""
+                loading="lazy"
+                className="absolute inset-0 h-full w-full object-cover opacity-30 grayscale transition-all duration-300 group-hover:opacity-20 group-hover:grayscale-0"
+                aria-hidden="true"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/30 pointer-events-none" />
 
-              {/* Top Code Badge */}
-              <div className="relative z-10 flex justify-between items-center">
-                <span className="px-2 py-0.5 bg-black/80 border border-white/20 text-[#C8FF16] font-bold text-xs uppercase">
-                  [{city.code}]
+              <div className="relative z-10 flex items-start justify-between font-mono text-xs uppercase tracking-widest">
+                <span className="text-3xl font-bold tracking-tighter text-muted-foreground transition-colors group-hover:text-black/60 md:text-4xl">
+                  {city.code}
                 </span>
-                <span className="text-[10px] text-white/60 uppercase">
-                  {city.count} ACTIVE GATES
+                <span className="flex items-center gap-1 border border-border bg-background/80 px-2 py-1 text-[10px] font-bold text-accent transition-colors group-hover:border-black/30 group-hover:bg-black/80 md:hidden lg:flex">
+                  <MapPin className="h-3 w-3" aria-hidden="true" />
+                  {city.count}
                 </span>
               </div>
 
-              {/* Bottom Details */}
-              <div className="relative z-10 space-y-1">
-                <h3 className="text-2xl font-black uppercase text-white group-hover:text-[#C8FF16] transition-colors">
+              <div className="relative z-10">
+                <h3 className="text-3xl font-bold uppercase leading-[0.85] tracking-tighter text-foreground transition-colors group-hover:text-black md:text-4xl">
                   {city.name}
                 </h3>
-                <p className="text-[11px] text-white/70 font-sans leading-tight">
+                <p className="mt-3 text-sm leading-tight text-muted-foreground transition-colors group-hover:text-black/70">
                   {city.desc}
                 </p>
               </div>
             </Link>
           ))}
         </div>
-
       </div>
     </section>
   );

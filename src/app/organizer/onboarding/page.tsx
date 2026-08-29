@@ -92,33 +92,33 @@ function OnboardingContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-[#F1F1EB] flex flex-col font-mono selection:bg-[#C8FF16] selection:text-black">
+    <div className="min-h-screen bg-background text-foreground flex flex-col font-mono selection:bg-accent selection:text-black">
       <RoleBanner />
       <Navbar />
 
       <main className="flex-1 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
         
         {/* Header */}
-        <div className="pb-6 border-b border-white/10 flex items-center justify-between">
+        <div className="pb-6 border-b border-border/50 flex items-center justify-between">
           <div>
-            <div className="text-[10px] uppercase tracking-widest text-[#C8FF16] font-bold">
+            <div className="text-[10px] uppercase tracking-widest text-accent font-bold">
               ORGANIZER ONBOARDING // KYC VERIFICATION
             </div>
-            <h1 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-white mt-1">
+            <h1 className="text-2xl sm:text-4xl font-black uppercase tracking-tight text-foreground mt-1">
               HOST VERIFICATION
             </h1>
           </div>
 
-          <div className="flex items-center gap-1.5 text-xs text-white/50">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             {[1, 2, 3].map(s => (
               <div
                 key={s}
                 className={`w-7 h-7 flex items-center justify-center border font-bold ${
                   step === s
-                    ? 'border-[#C8FF16] bg-[#C8FF16] text-black'
+                    ? 'border-accent bg-accent text-black'
                     : step > s
-                    ? 'border-white bg-white/20 text-white'
-                    : 'border-white/20 text-white/40'
+                    ? 'border-foreground bg-foreground/20 text-foreground'
+                    : 'border-border text-muted-foreground'
                 }`}
               >
                 {s}
@@ -131,7 +131,7 @@ function OnboardingContent() {
         {step === 1 && (
           <div className="py-8 space-y-6">
             <div>
-              <label className="block text-[11px] uppercase font-bold text-white/70 mb-2">
+              <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-2">
                 ORGANIZER ENTITY TYPE *
               </label>
               <div className="grid grid-cols-2 gap-3">
@@ -140,13 +140,13 @@ function OnboardingContent() {
                   onClick={() => setEntityType('company')}
                   className={`p-4 border text-left uppercase text-xs font-bold transition-all ${
                     entityType === 'company'
-                      ? 'border-[#C8FF16] bg-[#141810] text-[#C8FF16]'
-                      : 'border-white/10 bg-black text-white/70 hover:border-white/30'
+                      ? 'border-accent bg-card text-accent'
+                      : 'border-border/50 bg-black text-foreground/70 hover:border-border'
                   }`}
                 >
                   <Building2 className="w-5 h-5 mb-2" />
                   <div>REGISTERED COMPANY / LLP</div>
-                  <div className="text-[10px] text-white/40 font-sans mt-0.5">GST Registered Entity</div>
+                  <div className="text-[10px] text-muted-foreground font-sans mt-0.5">GST Registered Entity</div>
                 </button>
 
                 <button
@@ -154,19 +154,19 @@ function OnboardingContent() {
                   onClick={() => setEntityType('individual')}
                   className={`p-4 border text-left uppercase text-xs font-bold transition-all ${
                     entityType === 'individual'
-                      ? 'border-[#C8FF16] bg-[#141810] text-[#C8FF16]'
-                      : 'border-white/10 bg-black text-white/70 hover:border-white/30'
+                      ? 'border-accent bg-card text-accent'
+                      : 'border-border/50 bg-black text-foreground/70 hover:border-border'
                   }`}
                 >
                   <FileText className="w-5 h-5 mb-2" />
                   <div>PROPRIETOR / CURATOR</div>
-                  <div className="text-[10px] text-white/40 font-sans mt-0.5">PAN Verified Individual</div>
+                  <div className="text-[10px] text-muted-foreground font-sans mt-0.5">PAN Verified Individual</div>
                 </button>
               </div>
             </div>
 
             <div>
-              <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+              <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                 LEGAL ENTITY OR COLLECTIVE NAME *
               </label>
               <input
@@ -174,14 +174,14 @@ function OnboardingContent() {
                 value={companyName}
                 onChange={e => setCompanyName(e.target.value)}
                 placeholder="e.g. SubKulture Experiences LLP"
-                className="w-full bg-[#0e100c] border border-white/20 p-3 text-sm text-white font-bold focus:border-[#C8FF16] focus:outline-none"
+                className="w-full bg-card border border-border p-3 text-sm text-foreground font-bold focus:border-accent focus:outline-none"
                 required
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+                <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                   BUSINESS PAN NUMBER *
                 </label>
                 <input
@@ -190,13 +190,13 @@ function OnboardingContent() {
                   onChange={e => setPanNumber(e.target.value.toUpperCase())}
                   placeholder="e.g. AABCS1429M"
                   maxLength={10}
-                  className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white uppercase"
+                  className="w-full bg-card border border-border p-3 text-xs text-foreground uppercase"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+                <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                   GSTIN (OPTIONAL FOR INDIVIDUALS)
                 </label>
                 <input
@@ -205,7 +205,7 @@ function OnboardingContent() {
                   onChange={e => setGstin(e.target.value.toUpperCase())}
                   placeholder="e.g. 27AABCS1429M1ZB"
                   maxLength={15}
-                  className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white uppercase"
+                  className="w-full bg-card border border-border p-3 text-xs text-foreground uppercase"
                 />
               </div>
             </div>
@@ -215,7 +215,7 @@ function OnboardingContent() {
                 type="button"
                 onClick={() => setStep(2)}
                 disabled={!companyName || !panNumber}
-                className="px-6 py-3 bg-[#C8FF16] text-black font-black uppercase text-xs flex items-center gap-2 hover:bg-[#b8ea14] disabled:opacity-40"
+                className="px-6 py-3 bg-accent text-black font-black uppercase text-xs flex items-center gap-2 hover:bg-accent-hover disabled:opacity-40"
               >
                 <span>NEXT: BANK SETTLEMENT INFO</span>
                 <ArrowRight className="w-4 h-4" />
@@ -228,7 +228,7 @@ function OnboardingContent() {
         {step === 2 && (
           <div className="py-8 space-y-6">
             <div>
-              <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+              <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                 BANK ACCOUNT BENEFICIARY NAME *
               </label>
               <input
@@ -236,14 +236,14 @@ function OnboardingContent() {
                 value={accountName}
                 onChange={e => setAccountName(e.target.value)}
                 placeholder="Must match Legal PAN Entity Name"
-                className="w-full bg-[#0e100c] border border-white/20 p-3 text-sm text-white font-bold"
+                className="w-full bg-card border border-border p-3 text-sm text-foreground font-bold"
                 required
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+                <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                   BANK NAME *
                 </label>
                 <input
@@ -251,13 +251,13 @@ function OnboardingContent() {
                   value={bankName}
                   onChange={e => setBankName(e.target.value)}
                   placeholder="e.g. HDFC Bank"
-                  className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white"
+                  className="w-full bg-card border border-border p-3 text-xs text-foreground"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+                <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                   IFSC CODE *
                 </label>
                 <input
@@ -266,14 +266,14 @@ function OnboardingContent() {
                   onChange={e => setIfscCode(e.target.value.toUpperCase())}
                   placeholder="e.g. HDFC0000128"
                   maxLength={11}
-                  className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white uppercase"
+                  className="w-full bg-card border border-border p-3 text-xs text-foreground uppercase"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[11px] uppercase font-bold text-white/70 mb-1">
+              <label className="block text-[11px] uppercase font-bold text-foreground/70 mb-1">
                 BANK ACCOUNT NUMBER *
               </label>
               <input
@@ -281,7 +281,7 @@ function OnboardingContent() {
                 value={accountNumber}
                 onChange={e => setAccountNumber(e.target.value)}
                 placeholder="e.g. 50200049281920"
-                className="w-full bg-[#0e100c] border border-white/20 p-3 text-xs text-white font-mono"
+                className="w-full bg-card border border-border p-3 text-xs text-foreground font-mono"
                 required
               />
             </div>
@@ -290,7 +290,7 @@ function OnboardingContent() {
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="px-4 py-2 bg-black border border-white/20 text-xs font-bold uppercase text-white"
+                className="px-4 py-2 bg-black border border-border text-xs font-bold uppercase text-foreground"
               >
                 ← BACK
               </button>
@@ -298,7 +298,7 @@ function OnboardingContent() {
                 type="button"
                 onClick={() => setStep(3)}
                 disabled={!accountNumber || !ifscCode}
-                className="px-6 py-3 bg-[#C8FF16] text-black font-black uppercase text-xs flex items-center gap-2 hover:bg-[#b8ea14] disabled:opacity-40"
+                className="px-6 py-3 bg-accent text-black font-black uppercase text-xs flex items-center gap-2 hover:bg-accent-hover disabled:opacity-40"
               >
                 <span>NEXT: REVIEW & SUBMIT</span>
                 <ArrowRight className="w-4 h-4" />
@@ -310,33 +310,33 @@ function OnboardingContent() {
         {/* STEP 3: REVIEW & AGREEMENT */}
         {step === 3 && (
           <form onSubmit={handleSubmit} className="py-8 space-y-6">
-            <div className="p-6 bg-[#0e100c] border border-white/20 space-y-3 text-xs">
-              <div className="text-white font-bold uppercase pb-2 border-b border-white/10">
+            <div className="p-6 bg-card border border-border space-y-3 text-xs">
+              <div className="text-foreground font-bold uppercase pb-2 border-b border-border/50">
                 VERIFICATION MANIFEST
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <span className="text-white/40 uppercase text-[10px]">HOST COLLECTIVE:</span>
-                  <div className="text-white font-bold">{companyName}</div>
+                  <span className="text-muted-foreground uppercase text-[10px]">HOST COLLECTIVE:</span>
+                  <div className="text-foreground font-bold">{companyName}</div>
                 </div>
                 <div>
-                  <span className="text-white/40 uppercase text-[10px]">PAN:</span>
-                  <div className="text-white font-bold">{panNumber}</div>
+                  <span className="text-muted-foreground uppercase text-[10px]">PAN:</span>
+                  <div className="text-foreground font-bold">{panNumber}</div>
                 </div>
                 <div>
-                  <span className="text-white/40 uppercase text-[10px]">SETTLEMENT ROUTE:</span>
-                  <div className="text-white font-bold">{bankName} ({ifscCode})</div>
+                  <span className="text-muted-foreground uppercase text-[10px]">SETTLEMENT ROUTE:</span>
+                  <div className="text-foreground font-bold">{bankName} ({ifscCode})</div>
                 </div>
                 <div>
-                  <span className="text-white/40 uppercase text-[10px]">ACCOUNT:</span>
-                  <div className="text-white font-bold">••••••{accountNumber.slice(-4) || '8192'}</div>
+                  <span className="text-muted-foreground uppercase text-[10px]">ACCOUNT:</span>
+                  <div className="text-foreground font-bold">••••••{accountNumber.slice(-4) || '8192'}</div>
                 </div>
               </div>
             </div>
 
             <label className="flex items-start gap-2 text-xs cursor-pointer">
-              <input type="checkbox" defaultChecked className="accent-[#C8FF16] mt-0.5" required />
-              <span className="text-white/80 font-sans">
+              <input type="checkbox" defaultChecked className="accent-accent mt-0.5" required />
+              <span className="text-foreground/80 font-sans">
                 I accept Gate Zero’s Organizer Partnership Agreement, certify that all listed events adhere to local sound and venue regulations, and acknowledge the 5% platform service fee.
               </span>
             </label>
@@ -345,14 +345,14 @@ function OnboardingContent() {
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="px-4 py-2 bg-black border border-white/20 text-xs font-bold uppercase text-white"
+                className="px-4 py-2 bg-black border border-border text-xs font-bold uppercase text-foreground"
               >
                 ← BACK
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-8 py-4 bg-[#C8FF16] text-black font-black uppercase text-sm flex items-center gap-2 hover:bg-[#b8ea14] shadow-xl disabled:opacity-40"
+                className="px-8 py-4 bg-accent text-black font-black uppercase text-sm flex items-center gap-2 hover:bg-accent-hover disabled:opacity-40"
               >
                 <span>{isSubmitting ? 'PROCESSING APPLICATION...' : 'SUBMIT KYC & LAUNCH CONTROL ↗'}</span>
               </button>
