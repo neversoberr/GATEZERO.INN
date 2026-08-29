@@ -136,20 +136,29 @@ function EventsContent() {
       <RoleBanner />
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+      <main className="flex-1 w-full max-w-[95vw] mx-auto px-4 py-16 md:px-8 md:py-24">
         
-        {/* Page Header */}
-        <div className="pb-8 mb-8 border-b border-border/50 font-mono">
-          <div className="text-[10px] uppercase tracking-widest text-accent font-bold flex items-center gap-1.5">
-            <Compass className="w-3.5 h-3.5" />
-            DISCOVERY PROTOCOL // ALL GATES
+        {/* Page Header — display type over a massive muted numeral */}
+        <div className="relative mb-10 border-b-2 border-border pb-10 overflow-hidden">
+          <div
+            className="absolute -right-4 -top-10 select-none text-[24vw] font-bold leading-[0.8] tracking-tighter text-muted md:text-[16vw]"
+            aria-hidden="true"
+          >
+            {String(filteredEvents.length).padStart(2, '0')}
           </div>
-          <h1 className="text-4xl sm:text-6xl font-black uppercase tracking-tight text-foreground mt-1">
-            FIND YOUR NEXT ROOM.
-          </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground font-sans mt-2 max-w-2xl">
-            Live cultural access across Mumbai, Bengaluru, Delhi, Goa, and Pune. Filter by city, sound profile, and venue atmosphere.
-          </p>
+          <div className="relative z-10">
+            <div className="mb-4 flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-widest text-accent">
+              <span className="inline-block h-2 w-2 bg-accent" aria-hidden="true" />
+              <Compass className="h-3.5 w-3.5" aria-hidden="true" />
+              DISCOVERY PROTOCOL // ALL GATES
+            </div>
+            <h1 className="text-[clamp(3rem,9vw,8rem)] font-bold uppercase leading-[0.85] tracking-tighter text-foreground">
+              FIND YOUR NEXT <span className="text-accent">ROOM.</span>
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-tight tracking-tight text-muted-foreground md:text-xl">
+              Live cultural access across Mumbai, Bengaluru, Delhi, Goa, and Pune. Filter by city, sound profile, and venue atmosphere.
+            </p>
+          </div>
         </div>
 
         {/* Industrial Filter Toolbar */}
@@ -166,7 +175,7 @@ function EventsContent() {
             <InteractiveMap events={filteredEvents} />
           ) : filteredEvents.length > 0 ? (
             <div
-              className={`grid gap-6 ${
+              className={`grid gap-px border-2 border-border bg-border ${
                 filters.viewMode === 'list'
                   ? 'grid-cols-1 md:grid-cols-2'
                   : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
@@ -182,23 +191,28 @@ function EventsContent() {
             </div>
           ) : (
             /* Empty State */
-            <div className="py-20 text-center bg-card border border-border/50 font-mono p-8 space-y-4">
-              <div className="w-12 h-12 border border-accent text-accent flex items-center justify-center mx-auto text-xl font-bold">
+            <div className="relative overflow-hidden border-2 border-border bg-card px-8 py-20 text-center">
+              <div
+                className="pointer-events-none absolute inset-x-0 top-0 select-none text-[10rem] font-bold leading-[0.8] tracking-tighter text-muted"
+                aria-hidden="true"
+              >
                 00
               </div>
-              <h3 className="text-xl font-black uppercase text-foreground">
-                NOTHING THROUGH THIS GATE.
-              </h3>
-              <p className="text-xs text-muted-foreground max-w-md mx-auto font-sans">
-                No active events match your current coordinates and filters. Adjust your city or price range to scan again.
-              </p>
-              <button
-                onClick={handleResetFilters}
-                className="px-6 py-2.5 bg-accent text-black font-black uppercase text-xs inline-flex items-center gap-2 mt-2"
-              >
-                <FilterX className="w-4 h-4" />
-                <span>RESET ALL FILTERS</span>
-              </button>
+              <div className="relative z-10 space-y-4 pt-24 font-mono">
+                <h3 className="text-2xl font-bold uppercase tracking-tighter text-foreground md:text-4xl">
+                  NOTHING THROUGH THIS GATE.
+                </h3>
+                <p className="mx-auto max-w-md text-sm text-muted-foreground">
+                  No active events match your current coordinates and filters. Adjust your city or price range to scan again.
+                </p>
+                <button
+                  onClick={handleResetFilters}
+                  className="mt-2 inline-flex h-14 items-center gap-2 bg-accent px-8 text-xs font-bold uppercase tracking-tighter text-accent-foreground transition-all hover:scale-105 active:scale-95"
+                >
+                  <FilterX className="h-4 w-4" aria-hidden="true" />
+                  <span>RESET ALL FILTERS</span>
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -221,7 +235,7 @@ export default function EventsPage() {
   return (
     <ToastProvider>
       <AuthProvider>
-        <Suspense fallback={<div className="min-h-screen bg-black text-foreground p-12 font-mono">LOADING RADAR...</div>}>
+        <Suspense fallback={<div className="min-h-screen bg-background p-12 font-mono text-foreground">LOADING RADAR...</div>}>
           <EventsContent />
         </Suspense>
       </AuthProvider>
